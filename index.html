@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>소리콩 교실 지킴이</title>
+<meta name="description" content="시끄러운 교실을 지켜라! 6학년 과학 소리의 성질 · 데이터와 AI로 교실 방음 설계하기">
+<meta property="og:title" content="소리콩 교실 지킴이">
+<meta property="og:description" content="시끄러운 교실을 지켜라! 데이터와 AI로 우리 교실 소음을 55 dB 아래로">
+<meta property="og:image" content="https://hongdonedu.github.io/sorikong/assets/og.jpg">
+<link rel="icon" href="assets/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================
+   소리콩 교실 지킴이 — NIGHT CLASSROOM 테마 (2026-10 리디자인)
+   ========================================================== */
+:root{
+  --bg:#0a0d22; --bg2:#121a3d; --panel:rgba(22,28,66,.80); --panel2:rgba(255,255,255,.055);
+  --line:rgba(255,255,255,.12); --line2:rgba(255,255,255,.22);
+  --text:#f3f5ff; --muted:#a9b2da;
+  --gold:#ffd36b; --orange:#ff9a5c; --hot:#ff7bd5; --cyan:#7fd1ff; --mintA:#5ee6c1; --lavA:#b8a9ff;
+  /* 예전 이름(스크립트·인라인에서 사용) → 어두운 화면용 값 */
+  --navy:#f3f5ff; --ink:#a9b2da; --cream:#0a0d22; --paper:rgba(22,28,66,.80); --soft:rgba(255,255,255,.06);
+  --mint:rgba(94,230,193,.16); --mint-d:#5ee6c1; --lav:rgba(184,169,255,.18); --lav-d:#b8a9ff;
+  --peach:rgba(255,154,92,.18); --peach-d:#ff9a5c; --butter:rgba(255,211,107,.18); --butter-d:#ffd36b;
+  --sky:rgba(127,209,255,.16); --sky-d:#7fd1ff; --pink:rgba(255,123,213,.20); --red:#ff6b7a; --green:#5ee6c1;
+  --r:22px; --shadow:0 18px 50px rgba(0,0,0,.38);
+  --display:'Black Han Sans','Jua','Noto Sans KR',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{min-height:100%;background:#0a0d22}
+body{min-height:100vh}
+body{font-family:'Noto Sans KR',system-ui,sans-serif;color:var(--text);line-height:1.55;font-size:15px;
+  background:
+    radial-gradient(1100px 620px at 8% -8%, rgba(127,209,255,.13), transparent 62%),
+    radial-gradient(900px 560px at 102% 4%, rgba(255,123,213,.12), transparent 60%),
+    radial-gradient(900px 700px at 60% 110%, rgba(184,169,255,.12), transparent 60%),
+    linear-gradient(180deg,#0e1334 0%,#0a0d22 60%,#080a1b 100%);
+  background-color:#0a0d22;background-repeat:no-repeat;-webkit-tap-highlight-color:transparent}
+h1,h2,h3,.jua{font-family:'Jua','Noto Sans KR',sans-serif;font-weight:400;letter-spacing:-.01em}
+b{color:#fff}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit;font-size:15px;color:var(--text);border:1px solid var(--line2);border-radius:14px;padding:10px 12px;background:rgba(6,9,26,.55);width:100%;outline:none;transition:border-color .15s, box-shadow .15s}
+input::placeholder,textarea::placeholder{color:rgba(169,178,218,.62)}
+input:focus,textarea:focus,select:focus{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(127,209,255,.18)}
+select option{background:#141a3d;color:#f3f5ff}
+textarea{resize:vertical;min-height:84px}
+a{color:var(--cyan)}
+::selection{background:rgba(255,211,107,.35)}
+::-webkit-scrollbar{width:10px;height:10px} ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:10px} ::-webkit-scrollbar-track{background:transparent}
+
+/* ---------- 상단 바 ---------- */
+.top{position:sticky;top:0;z-index:30;background:rgba(9,12,32,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:10px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo .mascot img{width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(255,211,107,.35))}
+.logo h1{font-family:var(--display);font-size:23px;letter-spacing:.5px;background:linear-gradient(90deg,#fff 0%,#ffe9a8 45%,#ffb37a 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo small{display:block;font-size:11.5px;color:var(--muted);font-family:'Noto Sans KR';font-weight:500;letter-spacing:.2px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto;align-items:center}
+.chip{border:1px solid var(--line2);border-radius:999px;padding:6px 13px;font-weight:700;font-size:13px;background:rgba(255,255,255,.07);display:inline-flex;align-items:center;gap:6px;color:var(--text);backdrop-filter:blur(6px)}
+.chip.mint{background:rgba(94,230,193,.14);border-color:rgba(94,230,193,.42)}
+.chip.lav{background:rgba(184,169,255,.15);border-color:rgba(184,169,255,.45)}
+.chip.butter{background:linear-gradient(135deg,rgba(255,211,107,.24),rgba(255,154,92,.18));border-color:rgba(255,211,107,.55)}
+.chip.sky{background:rgba(127,209,255,.14);border-color:rgba(127,209,255,.45)}
+.chip.peach{background:rgba(255,154,92,.16);border-color:rgba(255,154,92,.45)}
+.chip.pink{background:rgba(255,123,213,.16);border-color:rgba(255,123,213,.45)}
+.chip.click{transition:.15s} .chip.click:hover{transform:translateY(-1px);background:rgba(255,255,255,.14)}
+.beans{font-family:'Jua';font-size:16px}
+.beans b{color:var(--gold)}
+
+/* ---------- 레이아웃 ---------- */
+.wrap{display:grid;grid-template-columns:214px 1fr;gap:20px;max-width:1320px;margin:18px auto;padding:0 18px 90px}
+nav.side{position:sticky;top:78px;align-self:start;display:flex;flex-direction:column;gap:7px;background:linear-gradient(180deg,rgba(30,26,84,.78),rgba(18,20,56,.78));border:1px solid var(--line);border-radius:24px;padding:12px 10px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+.nav-btn{display:flex;align-items:center;gap:10px;border:1px solid transparent;background:transparent;border-radius:16px;padding:9px 10px;font-weight:700;font-size:14px;text-align:left;color:#e6e9ff;transition:.15s}
+.nav-btn:hover{background:rgba(255,255,255,.07)}
+.nav-btn .ic{width:34px;height:34px;flex:0 0 34px;border-radius:11px;display:grid;place-items:center;font-size:17px;background:rgba(255,255,255,.08)!important;border:1px solid var(--line)}
+.nav-btn small{display:block;font-weight:500;font-size:11px;color:var(--muted)}
+.nav-btn.active{background:linear-gradient(135deg,rgba(255,211,107,.22),rgba(255,154,92,.12));border-color:rgba(255,211,107,.5);box-shadow:0 0 0 1px rgba(255,211,107,.15),0 8px 26px rgba(255,170,80,.18)}
+.nav-btn.active .ic{background:linear-gradient(135deg,#ffd36b,#ff9a5c)!important;border-color:transparent;box-shadow:0 4px 14px rgba(255,170,80,.45)}
+.nav-btn.active small{color:#ffe7b0}
+.nav-foot{margin-top:6px;padding:10px 6px 2px;border-top:1px solid var(--line);text-align:center}
+.nav-foot img{width:92px;height:auto;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45));animation:bob 3.2s ease-in-out infinite}
+.nav-foot .bubble{font-size:12px;color:#e9ecff;background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:12px;padding:6px 8px;margin-top:6px;line-height:1.45}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+main{min-width:0}
+section.page{display:none;animation:pop .3s ease}
+section.page.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- 카드 ---------- */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 22px;margin-bottom:16px;position:relative;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.card.mint,.card.lav,.card.peach,.card.butter,.card.sky,.card.soft{overflow:hidden}
+.card.mint{background:linear-gradient(135deg,rgba(94,230,193,.17),rgba(22,28,66,.86) 55%);border-color:rgba(94,230,193,.32)}
+.card.lav{background:linear-gradient(135deg,rgba(184,169,255,.20),rgba(22,28,66,.86) 55%);border-color:rgba(184,169,255,.34)}
+.card.peach{background:linear-gradient(135deg,rgba(255,154,92,.18),rgba(22,28,66,.86) 55%);border-color:rgba(255,154,92,.34)}
+.card.butter{background:linear-gradient(135deg,rgba(255,211,107,.18),rgba(22,28,66,.86) 55%);border-color:rgba(255,211,107,.34)}
+.card.sky{background:linear-gradient(135deg,rgba(127,209,255,.17),rgba(22,28,66,.86) 55%);border-color:rgba(127,209,255,.32)}
+.card.pinkc{background:linear-gradient(135deg,rgba(255,123,213,.18),rgba(22,28,66,.86) 55%);border-color:rgba(255,123,213,.34)}
+.card.soft{background:rgba(255,255,255,.045)}
+.card h2{font-size:27px;margin-bottom:4px;color:#fff}
+.card h3{font-size:19px;margin-bottom:10px;display:flex;align-items:center;gap:8px;color:#fff}
+.card.headline{padding-right:150px;min-height:118px}
+.page-mascot{position:absolute;right:14px;bottom:-14px;width:124px;height:auto;pointer-events:none;filter:drop-shadow(0 14px 22px rgba(0,0,0,.45));animation:bob 3.4s ease-in-out infinite}
+.sub{color:var(--muted);font-size:14.5px;margin-bottom:12px}
+.tag{display:inline-block;border:1px solid var(--line2);border-radius:999px;padding:3px 11px;font-size:12px;font-weight:700;background:rgba(255,255,255,.07);color:var(--text)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.g-lab{grid-template-columns:1.2fr 1fr} .g-ai{grid-template-columns:270px 1fr}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+/* ---------- 버튼 ---------- */
+.btn{border:1px solid var(--line2);border-radius:14px;padding:10px 17px;font-weight:700;font-size:14px;background:rgba(255,255,255,.08);color:var(--text);transition:transform .08s, background .15s, box-shadow .15s, filter .15s;display:inline-flex;align-items:center;gap:6px;backdrop-filter:blur(6px);text-decoration:none}
+.btn:hover{background:rgba(255,255,255,.15)}
+.btn:active{transform:scale(.96)}
+.btn.primary{background:linear-gradient(135deg,#ffd36b,#ff9a5c);color:#2a1606;border:none;box-shadow:0 8px 24px rgba(255,170,80,.35)}
+.btn.primary:hover{filter:brightness(1.07);background:linear-gradient(135deg,#ffd36b,#ff9a5c)}
+.btn.big{font-family:var(--display);font-size:20px;letter-spacing:.5px;padding:14px 28px;border-radius:18px}
+.btn.mint{background:rgba(94,230,193,.16);border-color:rgba(94,230,193,.5)}
+.btn.lav{background:rgba(184,169,255,.18);border-color:rgba(184,169,255,.55)}
+.btn.peach{background:rgba(255,154,92,.18);border-color:rgba(255,154,92,.55)}
+.btn.butter{background:rgba(255,211,107,.18);border-color:rgba(255,211,107,.55)}
+.btn.sky{background:rgba(127,209,255,.16);border-color:rgba(127,209,255,.5)}
+.btn.pink{background:rgba(255,123,213,.18);border-color:rgba(255,123,213,.55)}
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:11px}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.label{font-weight:700;font-size:13px;margin:10px 0 6px;display:block;color:#e6e9ff}
+.hint{font-size:12.5px;color:var(--muted)}
+.note{border:1px dashed var(--line2);border-radius:14px;padding:11px 13px;font-size:13.5px;background:rgba(255,255,255,.045);color:#e9ecff}
+.note.gold{background:rgba(255,211,107,.12);border-color:rgba(255,211,107,.42)}
+.note.mintn{background:rgba(94,230,193,.12);border-color:rgba(94,230,193,.42)}
+.note.warn{background:rgba(255,107,122,.12);border-color:rgba(255,107,122,.45)}
+.pill-group{display:flex;gap:8px;flex-wrap:wrap}
+.pill{border:1px solid var(--line2);border-radius:999px;padding:8px 15px;font-weight:700;font-size:14px;background:rgba(255,255,255,.06);color:var(--text);transition:.12s}
+.pill:hover{background:rgba(255,255,255,.12)}
+.pill.on{background:linear-gradient(135deg,#ffd36b,#ff9a5c);color:#2a1606;border-color:transparent;box-shadow:0 6px 18px rgba(255,170,80,.3)}
+.src{font-size:11px;color:var(--muted);margin-top:8px}
+.src a{color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:rgba(16,20,52,.94);color:#fff;padding:11px 20px;border-radius:999px;font-weight:700;opacity:0;transition:.25s;z-index:99;pointer-events:none;font-size:14px;border:1px solid rgba(255,211,107,.5);box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 24px rgba(255,211,107,.18)}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.star{position:absolute;font-size:20px;color:var(--gold);text-shadow:0 0 12px rgba(255,211,107,.8);pointer-events:none}
+.mascot{display:inline-block}
+.mascot img{display:block}
+
+/* ---------- 시작 화면 히어로 ---------- */
+.hero{position:relative;border-radius:28px;overflow:hidden;min-height:440px;margin-bottom:18px;border:1px solid var(--line);box-shadow:0 24px 60px rgba(0,0,0,.5);background:#0b1026}
+.hero-bg{position:absolute;inset:-2%;background-size:cover;background-position:78% 40%;animation:kenburns 26s ease-in-out infinite alternate}
+@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.07) translateX(-1%)}}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,10,30,.95) 0%,rgba(8,10,30,.82) 30%,rgba(8,10,30,.35) 50%,rgba(8,10,30,0) 66%),linear-gradient(0deg,rgba(8,10,30,.85) 0%,rgba(8,10,30,0) 36%);pointer-events:none}
+.hero-in{position:relative;z-index:2;padding:clamp(24px,4.2vw,50px) clamp(22px,3.6vw,48px);max-width:500px}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:900;letter-spacing:1.5px;color:#9fe3ff;text-shadow:0 0 14px rgba(127,209,255,.6)}
+.hero-title{font-family:var(--display);font-weight:400;font-size:clamp(42px,5.4vw,70px);line-height:1.02;margin:12px 0 4px;color:#fff;text-shadow:0 6px 30px rgba(0,0,0,.45)}
+.hero-title span{background:linear-gradient(90deg,#ffe58a,#ffb36b 50%,#ff8fc8);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 18px rgba(255,170,80,.35))}
+.hero-en{font-weight:900;letter-spacing:4px;font-size:13px;color:#ffd36b;margin-bottom:14px}
+.hero-sub{font-size:16px;color:#e7eaff;line-height:1.7;margin-bottom:18px;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.hero-sub b{color:#ffd36b}
+.dbmission{display:inline-flex;align-items:center;gap:12px;background:rgba(10,13,34,.6);border:1px solid var(--line2);border-radius:18px;padding:10px 16px;margin-bottom:18px;backdrop-filter:blur(8px)}
+.dbmission .from{font-family:var(--display);font-size:30px;color:#ff8f8f;text-shadow:0 0 16px rgba(255,107,122,.6)}
+.dbmission .to{font-family:var(--display);font-size:30px;color:#5ee6c1;text-shadow:0 0 16px rgba(94,230,193,.6)}
+.dbmission .arrow{font-size:22px;color:#ffd36b}
+.dbmission small{display:block;font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.5px}
+.hero-tags{margin-top:16px}
+.hero-tags .tag{background:rgba(10,13,34,.55)}
+.hero-mascot{position:absolute;right:3%;bottom:2%;z-index:2;width:clamp(120px,15vw,190px);pointer-events:none;animation:bob 3s ease-in-out infinite}
+.hero-mascot img{width:100%;height:auto;filter:drop-shadow(0 16px 26px rgba(0,0,0,.5))}
+
+/* 여정·할 일 */
+.jstepline{display:grid;grid-template-columns:72px 1fr;gap:12px;align-items:flex-start;margin-bottom:10px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.jstepline .chip{justify-content:center;font-family:'Jua';font-size:14px}
+.todo-row{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--line);margin-bottom:8px}
+.todo-row .box{width:22px;height:22px;flex:0 0 22px;border-radius:7px;border:1.5px solid rgba(255,211,107,.7);display:grid;place-items:center;font-size:12px;color:var(--gold);margin-top:1px}
+
+/* ---------- dB 사다리 ---------- */
+.ladder{display:flex;flex-direction:column;gap:6px}
+.rung{display:grid;grid-template-columns:62px 1fr;gap:10px;align-items:center}
+.rung .db{font-family:var(--display);font-size:20px;text-align:right;color:#fff}
+.rung .bar{height:34px;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;padding:0 12px;font-size:13px;font-weight:700;gap:8px;position:relative;overflow:hidden;background:rgba(255,255,255,.04)}
+.rung .bar .fx{position:absolute;inset:0;z-index:0;opacity:.85;border-radius:11px}
+.rung .bar span{position:relative;z-index:1;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.55)}
+.rung.base .bar{border:1px dashed rgba(255,211,107,.6);background:repeating-linear-gradient(45deg,rgba(255,211,107,.08) 0 8px,transparent 8px 16px)}
+.rung.base .bar span{color:#ffe7a8}
+
+/* ---------- 재료 카드 ---------- */
+.mat{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.05);padding:12px;display:flex;flex-direction:column;gap:7px;transition:.15s}
+.mat:hover{transform:translateY(-2px);border-color:var(--line2)}
+.mat .sw{height:44px;border-radius:12px;border:1px solid var(--line2)}
+.mat .nm{font-family:'Jua';font-size:18px;color:#fff}
+.mat .meter{height:10px!important;border:none!important;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.1)!important;padding:0!important;box-shadow:none!important}
+.mat .meter i{display:block;height:100%;background:linear-gradient(90deg,#5ee6c1,#7fd1ff)!important}
+.mat .q{font-size:12px;color:var(--muted)}
+
+/* ---------- 토의 카드 ---------- */
+.idea{border:1px solid var(--line);border-radius:16px;padding:11px 13px;background:rgba(255,255,255,.05);display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:start;animation:pop .3s ease}
+.idea .who{font-weight:700;font-size:13px;color:#e6e9ff}
+.idea .txt{font-size:14.5px;grid-column:1;color:#fff}
+.idea .ev{font-size:12px;color:var(--muted);grid-column:1}
+.idea .vote{grid-column:2;grid-row:1/4;align-self:center;white-space:nowrap}
+.idea.decision{background:linear-gradient(135deg,rgba(255,211,107,.18),rgba(255,255,255,.04));border-color:rgba(255,211,107,.45)}
+.idea.question{background:linear-gradient(135deg,rgba(127,209,255,.16),rgba(255,255,255,.04));border-color:rgba(127,209,255,.42)}
+.idea.me{box-shadow:inset 3px 0 0 var(--gold)}
+.idea .vote.voted{background:linear-gradient(135deg,#ffd36b,#ff9a5c);color:#2a1606;border-color:transparent}
+
+/* ---------- 측정·분석 ---------- */
+table.meas{width:100%;border-collapse:separate;border-spacing:0;font-size:14px}
+table.meas th,table.meas td{padding:6px 6px;text-align:center}
+table.meas th{font-size:12px;color:var(--muted)}
+table.meas input{padding:6px 4px;border-radius:10px;text-align:center;font-size:15px;min-width:58px}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+.chartbox{border:1px solid rgba(255,255,255,.35);border-radius:18px;background:linear-gradient(180deg,#fbf9ff,#eef1ff);padding:10px;min-height:260px;box-shadow:inset 0 0 0 4px rgba(255,255,255,.4),0 10px 30px rgba(0,0,0,.35)}
+.sentence{font-family:'Jua';font-size:20px;line-height:1.8;display:block;color:#fff}
+.blank{display:inline-block;min-width:90px;border-bottom:3px solid var(--gold);text-align:center;padding:0 8px;background:rgba(255,211,107,.16);border-radius:8px 8px 0 0;line-height:1.35;vertical-align:baseline;color:#ffe9a8;outline:none}
+
+/* ---------- AI ---------- */
+.chat{border:1px solid var(--line);border-radius:18px;background:rgba(6,9,26,.5);padding:14px;height:380px;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:86%;padding:10px 14px;border-radius:18px;border:1px solid var(--line);font-size:14.5px;white-space:pre-wrap;line-height:1.6}
+.msg.me{align-self:flex-end;background:linear-gradient(135deg,rgba(255,211,107,.25),rgba(255,154,92,.16));border-color:rgba(255,211,107,.42);border-bottom-right-radius:6px}
+.msg.ai{align-self:flex-start;background:linear-gradient(135deg,rgba(184,169,255,.22),rgba(127,209,255,.10));border-color:rgba(184,169,255,.42);border-bottom-left-radius:6px}
+.msg .r{font-size:11px;font-weight:700;opacity:.8;display:block;margin-bottom:3px;color:#e6e9ff}
+.cardbtn{border:1px solid var(--line);border-radius:18px;padding:12px 14px;background:rgba(255,255,255,.05);text-align:left;transition:.15s;position:relative;overflow:hidden}
+.cardbtn:hover{border-color:var(--line2);transform:translateX(2px)}
+.cardbtn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,#b8a9ff,#7fd1ff);opacity:.6}
+.cardbtn.on{background:linear-gradient(135deg,rgba(184,169,255,.26),rgba(127,209,255,.10));border-color:rgba(184,169,255,.6);box-shadow:0 8px 24px rgba(140,120,255,.2)}
+.cardbtn.on::before{opacity:1;width:5px}
+.cardbtn b{display:block;font-family:'Jua';font-size:16.5px;color:#fff}
+.cardbtn span{font-size:12px;color:var(--muted)}
+
+/* ---------- 발표 카드 ---------- */
+.present{border:1px solid rgba(255,211,107,.35);border-radius:26px;background:linear-gradient(160deg,rgba(255,211,107,.10),rgba(22,28,66,.86) 40%);padding:24px;box-shadow:var(--shadow)}
+.present .step{display:grid;grid-template-columns:54px 1fr;gap:12px;align-items:start;margin-bottom:14px}
+.present .num{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-size:21px;background:linear-gradient(135deg,#ffd36b,#ff9a5c);color:#2a1606;box-shadow:0 6px 18px rgba(255,170,80,.35)}
+
+/* ---------- 탐구 일지 ---------- */
+.jbar{height:12px;border:none;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:14px}
+.jbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff7bd5,#b8a9ff,#7fd1ff);transition:.4s;box-shadow:0 0 14px rgba(255,123,213,.6)}
+.jrow{display:grid;grid-template-columns:46px 1fr auto;gap:12px;align-items:center;padding:12px 6px;border-bottom:1px solid var(--line)}
+.jrow:last-child{border-bottom:none}
+.jrow .n{width:42px;height:42px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;font-family:'Jua';font-size:15px;background:rgba(255,255,255,.06);color:#fff}
+.jrow.done .n{background:linear-gradient(135deg,#5ee6c1,#7fd1ff);color:#06231c;border-color:transparent}
+.jrow.lock .n{color:var(--muted)}
+.jrow b{display:block;font-size:15px} .jrow .hint{font-size:12px}
+.jrow.lock{opacity:.55}
+.jtabs{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line);margin:12px 0 14px}
+.jtabs button{padding:11px 6px;font-weight:700;font-size:13px;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.jtabs button.on{color:#fff;border-bottom-color:var(--gold)}
+.msg .r.click{cursor:pointer;text-decoration:underline dotted}
+.msg.hl{outline:2px solid var(--red)}
+
+/* ---------- 선생님 ---------- */
+table.t{width:100%;border-collapse:collapse;font-size:12px;background:transparent}
+table.t th,table.t td{border:1px solid var(--line);padding:6px 7px;text-align:left;vertical-align:top;color:#e9ecff}
+table.t th{background:#1a2150;position:sticky;top:0;color:#ffe7a8}
+table.t tr:nth-child(even) td{background:rgba(255,255,255,.03)}
+.tbox{max-height:320px;overflow:auto;border:1px solid var(--line);border-radius:14px}
+
+/* ---------- 퀴즈 ---------- */
+.quiz{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.05);padding:12px 14px;margin-bottom:10px}
+.quiz .opts{display:grid;gap:6px;margin-top:8px}
+.quiz .opt{border:1px solid var(--line2);border-radius:12px;padding:8px 11px;text-align:left;font-size:14px;background:rgba(255,255,255,.05);color:var(--text);transition:.12s}
+.quiz .opt:hover{background:rgba(255,255,255,.11)}
+.quiz .opt.ok{background:rgba(94,230,193,.25);border-color:rgba(94,230,193,.7)}
+.quiz .opt.no{background:rgba(255,107,122,.2);border-color:rgba(255,107,122,.6)}
+
+/* ---------- 교실 설계 ---------- */
+.room-wrap{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+.scene{border:1px solid var(--line2);border-radius:var(--r);background:#0d1333;box-shadow:var(--shadow),0 0 0 4px rgba(255,255,255,.03);padding:8px;position:relative;overflow:hidden}
+.scene svg{width:100%;display:block;border-radius:16px}
+.slot{cursor:pointer}
+.slot .hit{fill:transparent;stroke:transparent;stroke-width:3;stroke-dasharray:9 6;transition:.15s}
+.slot:hover .hit{stroke:#ffd36b;fill:rgba(255,211,107,.14)}
+.slot.sel .hit{stroke:#ffd36b;fill:rgba(255,211,107,.22);animation:dash 1.2s linear infinite;filter:drop-shadow(0 0 6px rgba(255,211,107,.8))}
+@keyframes dash{to{stroke-dashoffset:-30}}
+.wave-anim{animation:wavepulse 1.6s ease-in-out infinite;transform-box:fill-box}
+@keyframes wavepulse{0%,100%{opacity:.55}50%{opacity:1}}
+.meter{border:1px solid var(--line);border-radius:22px;background:var(--panel);padding:16px 18px;box-shadow:var(--shadow)}
+.meter .big{font-family:var(--display);font-size:50px;line-height:1;color:#fff;text-shadow:0 0 22px rgba(255,255,255,.25)}
+.meter .big.hot{color:#ff9aa5;text-shadow:0 0 22px rgba(255,107,122,.55)}
+.meter .big.ok{color:#7ff0cf;text-shadow:0 0 22px rgba(94,230,193,.55)}
+#dbCut{font-family:var(--display)!important;color:#5ee6c1!important;text-shadow:0 0 14px rgba(94,230,193,.5)}
+.gauge{position:relative;height:16px;border:none;border-radius:999px;background:linear-gradient(90deg,#5ee6c1 0%,#7fd1ff 22%,#ffd36b 50%,#ff9a5c 72%,#ff5d8f 100%);margin:12px 0 4px;box-shadow:0 0 18px rgba(255,170,80,.25)}
+.gauge .pin{position:absolute;top:-9px;width:6px;height:34px;background:#fff;border-radius:4px;transform:translateX(-3px);transition:.5s cubic-bezier(.3,1.4,.5,1);box-shadow:0 0 12px rgba(255,255,255,.9)}
+.gauge .mark{position:absolute;top:22px;font-size:10px;font-weight:700;transform:translateX(-50%);white-space:nowrap;color:var(--muted)}
+.gauge .mark::before{content:'';position:absolute;left:50%;top:-6px;width:1px;height:6px;background:rgba(255,255,255,.4)}
+.paths{display:grid;gap:7px;margin-top:28px}
+.path{display:grid;grid-template-columns:124px 1fr 54px;gap:8px;align-items:center;font-size:12.5px;font-weight:700;color:#e9ecff}
+.path .bar{height:12px;border:none;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.1)}
+.path .bar i{display:block;height:100%;transition:.5s;border-radius:999px;box-shadow:0 0 10px currentColor}
+.path.top-path span:first-child{color:#ffd36b}
+.shop-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.shop-tabs button{border:1px solid var(--line2);border-radius:999px;padding:6px 12px;font-weight:700;font-size:12.5px;background:rgba(255,255,255,.06);color:var(--text)}
+.shop-tabs button.on{background:linear-gradient(135deg,#ffd36b,#ff9a5c);color:#2a1606;border-color:transparent}
+.costbar{display:flex;justify-content:space-between;align-items:center;border:1px solid rgba(255,211,107,.4);border-radius:16px;padding:10px 14px;background:linear-gradient(135deg,rgba(255,211,107,.14),rgba(255,154,92,.06));font-weight:700}
+.costbar b{color:var(--gold);font-family:var(--display);font-size:18px;font-weight:400}
+.item{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.05);padding:10px 12px;display:grid;grid-template-columns:58px 1fr auto;gap:12px;align-items:center;margin-bottom:10px;transition:.15s}
+.item:hover{border-color:var(--line2);background:rgba(255,255,255,.08)}
+.item.on{background:linear-gradient(135deg,rgba(94,230,193,.20),rgba(255,255,255,.04));border-color:rgba(94,230,193,.6);box-shadow:0 0 0 1px rgba(94,230,193,.2),0 8px 24px rgba(94,230,193,.12)}
+.item.cant{opacity:.48}
+.item .em{font-size:32px;text-align:center;width:58px;height:58px;display:grid;place-items:center;border-radius:14px;background:rgba(255,255,255,.07);overflow:hidden}
+.item .em img{width:54px;height:54px;object-fit:contain;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
+.item b{display:block;font-size:14.5px}
+.item .d{font-size:12px;color:var(--muted)}
+.item .tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.item .tags span{font-size:10.5px;border:1px solid var(--line2);border-radius:999px;padding:1px 8px;background:rgba(255,255,255,.06);font-weight:700;color:#e6e9ff}
+.item .tags span.ours{background:rgba(255,211,107,.2);border-color:rgba(255,211,107,.6);color:#ffe7a8}
+.item .pr{font-family:'Jua';font-size:15px;text-align:right;color:var(--gold)}
+.item button{margin-top:4px}
+.goalbox{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.goal{border:1px solid var(--line);border-radius:14px;padding:9px;background:rgba(255,255,255,.04);text-align:center;font-size:12px;color:var(--muted)}
+.goal.hit{background:linear-gradient(135deg,rgba(94,230,193,.25),rgba(127,209,255,.10));border-color:rgba(94,230,193,.65);color:#dffbf2;box-shadow:0 0 18px rgba(94,230,193,.25)}
+.goal b{display:block;font-family:var(--display);font-size:19px;font-weight:400;color:#fff}
+.badge-floating{position:absolute;top:12px;right:14px;z-index:2}
+
+/* ---------- 미니 실험 ---------- */
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cond{display:grid;grid-template-columns:34px 1fr 64px 64px 64px 60px;gap:6px;align-items:center;margin-bottom:8px}
+.cond input{padding:8px 4px;text-align:center;font-size:15px}
+.cond .nm{font-weight:700;font-size:13px}
+.cond .mean{font-family:var(--display);font-size:19px;text-align:center;color:var(--gold)}
+.rigbox{border-radius:18px;background:linear-gradient(180deg,#fbf9ff,#eef1ff);padding:10px;border:1px solid rgba(255,255,255,.35)}
+
+/* ---------- 반응형 ---------- */
+@media (max-width:960px){ .room-wrap{grid-template-columns:1fr} }
+@media (max-width:860px){
+  .wrap{grid-template-columns:1fr;margin-top:10px;padding-bottom:112px}
+  nav.side{position:fixed;left:8px;right:8px;bottom:8px;top:auto;flex-direction:row;overflow-x:auto;padding:7px;border-radius:20px;gap:4px;z-index:40;background:rgba(14,16,46,.92)}
+  .nav-btn{flex:0 0 auto;padding:7px 9px;font-size:12px;flex-direction:column;gap:4px;min-width:66px;text-align:center}
+  .nav-btn .ic{width:30px;height:30px;flex-basis:30px}
+  .nav-btn small{display:none}
+  .nav-foot{display:none}
+  .sim,.g-lab,.g-ai,.mini-grid{grid-template-columns:1fr}
+  .layer-sel{grid-template-columns:1fr}
+  .logo h1{font-size:19px}
+  .hero{min-height:380px}
+  .hero-bg{background-position:70% 40%}
+  .hero::after{background:linear-gradient(180deg,rgba(8,10,30,.35) 0%,rgba(8,10,30,.88) 58%,rgba(8,10,30,.96) 100%)}
+  .hero-in{padding-top:150px}
+  .hero-mascot{top:14px;bottom:auto;right:14px;width:110px}
+  .card.headline{padding-right:22px;min-height:0}
+  .page-mascot{display:none}
+  .hero-en{letter-spacing:2px;font-size:11px}
+  .hero-title{font-size:44px}
+  .path{grid-template-columns:100px 1fr 46px}
+}
+@media (max-width:520px){ .cond{grid-template-columns:28px 1fr 50px 50px 50px 48px} .cond input{padding:6px 2px;font-size:13px} .chips .chip{font-size:12px;padding:5px 10px} }
+@media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} }
+@media print{
+  body{background:#fff!important;color:#111}
+  .top,nav.side,.noprint,.hero,.page-mascot{display:none!important}
+  .wrap{display:block}
+  .card,.present{box-shadow:none;background:#fff!important;border:1.5px solid #333!important;color:#111;break-inside:avoid}
+  .present *, .card *{color:#111!important;text-shadow:none!important}
+  textarea,input{background:#fff!important;color:#111!important;border:1px solid #999!important}
+}
+/* 추가 요소 */
+.jstepline.cur{border-color:rgba(255,211,107,.6);background:linear-gradient(135deg,rgba(255,211,107,.14),rgba(255,255,255,.03));box-shadow:0 0 0 1px rgba(255,211,107,.15)}
+.hero-mascot:empty{display:none}
+#navMascot:not([src]){display:none}
+.msg .r .av{width:22px;height:22px;object-fit:contain;vertical-align:-6px;margin-right:4px}
+.flash{animation:flash 1.5s ease}
+@keyframes flash{0%,100%{box-shadow:var(--shadow)}30%,70%{box-shadow:0 0 0 3px rgba(255,211,107,.85),0 0 40px rgba(255,211,107,.45)}}
+#page-home .grid.g2 > .card:first-child h3{font-size:20px}
+
+</style>
+<script>
+/* 그림 파일(assets 폴더) — ChatGPT로 만든 소리콩 그림 */
+window.ART=(function(){ const b='assets/'; const o={key:b+'keyart.webp',room:b+'room.webp'};
+  ['wave','think','noisy','cheer'].forEach(n=>o['m_'+n]=b+'m_'+n+'.webp');
+  ['egg','felt','shelf','panel','strip','dcurt','bubble','curt','double','tile','sock','mat','walk','slip','voice','upstairs'].forEach(n=>o['i_'+n]=b+'items/'+n+'.webp');
+  return o; })();
+</script>
+
+</head>
+<body>
+
+<header class="top">
+  <div class="logo" onclick="go('home')" title="처음 화면">
+    <span id="logoMascot" class="mascot"></span>
+    <div>
+      <h1>소리콩 교실 지킴이</h1>
+      <small>시끄러운 교실을 지켜라! · 6학년 4차시 탐구</small>
+    </div>
+  </div>
+  <div class="chips">
+    <span class="chip mint click" id="chipGroup" onclick="go('home')">🏠 모둠 선택</span>
+    <span class="chip lav" id="chipLesson">📘 차시</span>
+    <span class="chip butter click" onclick="go('room')"><span class="beans">🫘 <b id="beanCount">20</b></span>&nbsp;소리콩</span>
+    <span class="chip sky" id="chipAI">🤖 AI 준비 중…</span>
+    <button class="chip click" onclick="go('teacher')">👩‍🏫 선생님</button>
+  </div>
+</header>
+
+<div class="wrap">
+<nav class="side" id="nav">
+  <button class="nav-btn" data-page="home"><span class="ic" style="background:var(--sky)">🏠</span><span>시작<small>모둠·오늘의 미션</small></span></button>
+  <button class="nav-btn" data-page="data"><span class="ic" style="background:var(--sky)">📚</span><span>소리 백과<small>공공데이터·교과서</small></span></button>
+  <button class="nav-btn" data-page="mini"><span class="ic" style="background:var(--mint)">🧪</span><span>미니 실험<small>1차시 · 상자 체험</small></span></button>
+  <button class="nav-btn" data-page="talk"><span class="ic" style="background:var(--mint)">💬</span><span>모둠 토의<small>소리가 들어오는 길</small></span></button>
+  <button class="nav-btn" data-page="room"><span class="ic" style="background:var(--lav)">🏫</span><span>교실 방음 설계<small>가상 교실 · 소리콩</small></span></button>
+  <button class="nav-btn" data-page="ai"><span class="ic" style="background:var(--lav)">🤖</span><span>AI 파트너<small>프롬프트 카드</small></span></button>
+  <button class="nav-btn" data-page="journal"><span class="ic" style="background:var(--pink)">📒</span><span>탐구 일지<small>돌아보기·AI 대화 기록</small></span></button>
+  <button class="nav-btn" data-page="present"><span class="ic" style="background:var(--butter)">🏆</span><span>설계 발표<small>우리 모둠 설계도</small></span></button>
+  <div class="nav-foot"><img id="navMascot" alt="소리콩"><div class="bubble">가장 시끄러운 길부터<br>막아 보자! 🎧</div></div>
+</nav>
+
+<main>
+<!-- ============ 0. 시작 ============ -->
+<section class="page" id="page-home">
+  <div class="hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-in">
+      <div class="kicker">🎧 6학년 과학 · 소리의 성질 · 4차시 탐구</div>
+      <h2 class="hero-title">소리콩<br><span>교실 지킴이</span></h2>
+      <div class="hero-en">CLASSROOM SOUND GUARDIANS</div>
+      <p class="hero-sub">복도 소음이 교실로 몰려온다!<br>소리를 막는 원리를 알아내고, <b>데이터</b>로 방음 장치를 골라 우리 교실을 지켜 내자.</p>
+      <div class="dbmission"><div><small>지금 우리 교실</small><span class="from">67 dB</span></div><span class="arrow">➜</span><div><small>학교보건법 기준</small><span class="to">55 dB</span></div></div>
+      <div class="row">
+        <button class="btn primary big" onclick="heroStart()">탐구 시작 ▶</button>
+        <button class="btn" onclick="go('room')">🏫 가상 교실</button>
+      </div>
+    </div>
+    <div id="heroMascot" class="hero-mascot"></div>
+  </div>
+  <div class="grid g2">
+    <div class="card" id="loginCard">
+      <h3>🎫 탐험대 입장 · 우리 모둠</h3>
+      <span class="label">모둠 번호</span>
+      <div class="pill-group" id="groupPills"></div>
+      <span class="label">우리 반과 내 번호</span>
+      <div class="row" style="gap:8px;align-items:center;flex-wrap:nowrap">
+        <select id="cls" style="width:auto;min-width:96px"></select><b>반</b>
+        <input id="num" type="number" min="1" max="40" inputmode="numeric" placeholder="번호" style="width:110px"><b>번</b>
+      </div>
+      <span class="label">오늘은 몇 차시?</span>
+      <div class="pill-group" id="lessonPills"></div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn primary" onclick="startSession()">탐구 시작! 🚀</button>
+        <button class="btn sm" onclick="restoreFromServer()">☁️ 지난 기록 불러오기</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🗺️ 4차시 탐구 여정</h3>
+      <div id="journey"></div>
+    </div>
+  </div>
+  <div class="card butter">
+    <h3>✅ 오늘 할 일</h3>
+    <div id="todo"></div>
+  </div>
+</section>
+
+<!-- ============ 1. 소리 백과 ============ -->
+<section class="page" id="page-data">
+  <div class="card">
+    <h2>📚 소리 백과: 숫자로 보는 소리</h2>
+    <p class="sub">공공기관이 공개한 자료로 만든 표예요. 우리 교실 소음이 어디쯤인지, 얼마나 낮춰야 하는지 찾아보세요.</p>
+    <div class="grid g2">
+      <div>
+        <h3>🪜 dB 사다리</h3>
+        <div class="ladder" id="ladder"></div>
+        <p class="src">출처: 한국환경공단 국가소음정보시스템 '소음의 종류와 영향' · 학교보건법 시행규칙 [별표 4] · WHO Guidelines for Community Noise(1999)</p>
+      </div>
+      <div>
+        <h3>🎯 지켜야 할 기준선</h3>
+        <div class="grid" style="gap:10px">
+          <div class="note"><b>교실 55 dB 이하</b> — 학교보건법 시행규칙 [별표 4] 교사 내 소음 기준</div>
+          <div class="note"><b>WHO 교실 권고 35 dB</b> — 수업 시간 중, 말소리가 또렷이 들리는 정도</div>
+          <div class="note"><b>층간소음(공기전달) 낮 45 / 밤 40 dB</b> — 공동주택 층간소음 규칙(2023)</div>
+          <div class="note"><b>학교 주변 공사장 낮 65 dB</b> — 소음·진동관리법 시행규칙 [별표 8]</div>
+          <div class="note gold"><b>📱 앱 오차 ±2 dB</b> — 미국 NIOSH 검증 기준. <b>2 dB 안의 차이는 "같다"</b>고 봐요.</div>
+          <div class="note mintn"><b>👂 10 dB이 줄면</b> 사람 귀에는 <b>절반쯤</b> 조용하게 들려요. 3 dB이 줄면 소리 에너지는 절반!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card mint">
+    <h3>📖 교과서 힌트: 소음을 줄이는 두 가지 길</h3>
+    <p class="sub" style="margin-bottom:8px">3학년 『과학』 3단원 '소리의 성질' 82~85쪽 · 『실험관찰』 46~49쪽 "소음아, 날 떠나 줘"</p>
+    <div class="grid g2">
+      <div class="note"><b>① 소리의 세기를 작게 하기</b><br>소리를 내는 쪽에서 줄여요. 복도에서 걷기, 목소리 단계 약속, 의자 다리 덮개, 실내화.</div>
+      <div class="note"><b>② 소리가 잘 전달되지 않게 하기</b><br>소리가 오는 길을 막아요. 이중창·문풍지(틈새 막기)·무거운 벽(차음), 커튼·흡음판(흡수), 매트(바닥 소리).</div>
+    </div>
+    <p class="hint" style="margin-top:8px">💡 <b>흡음</b>(소리를 빨아들여 울림을 줄임)과 <b>차음</b>(소리가 지나가지 못하게 막음)은 달라요. 폭신한 계란판·스펀지는 흡음, 무겁고 빈틈없는 벽·이중창은 차음에 강해요. 그리고 <b>틈새</b>가 조금만 있어도 소리는 새어 들어와요!</p>
+  </div>
+  <div class="card">
+    <h3>🧽 재료별 흡음률 (소리를 얼마나 빨아들이나)</h3>
+    <p class="sub">0~1. 1에 가까울수록 소리를 많이 흡수해요. 골판지·계란판·뽁뽁이는 공식 표에 없어요 → 1차시 미니 실험으로 직접 재 봐요!</p>
+    <div class="grid g4" id="matCards"></div>
+    <p class="src">출처: Engineering ToolBox 'Sound Absorption Coefficients', Acoustic.ua 'Absorption Coefficients'(500~2000 Hz 평균)</p>
+  </div>
+  <div class="card soft">
+    <h3>🗂️ 더 찾아볼 공공데이터 (선생님·AI 노트북용)</h3>
+    <div class="grid g2" id="dataLinks"></div>
+  </div>
+</section>
+
+<!-- ============ 2. 미니 실험 ============ -->
+<section class="page" id="page-mini">
+  <div class="card mint">
+    <h2>🧪 미니 실험: 상자 소리, 무엇으로 막힐까?</h2>
+    <p class="sub">상자 안에서 '쉬—' 소리를 내고, 입구를 판 1장으로 덮은 뒤 판 위 종이컵에 휴대폰을 올려 소리 크기(dB)를 재요. <b>조건마다 1번(시간이 되면 3번)</b>. 재는 5초 동안은 모두 쉿 🤫</p>
+  </div>
+  <div class="mini-grid">
+    <div class="card">
+      <h3>📝 측정값 (dB)</h3>
+      <div class="cond" style="margin-bottom:4px"><span></span><span class="hint">조건</span><span class="hint" style="text-align:center">1회</span><span class="hint" style="text-align:center">2회</span><span class="hint" style="text-align:center">3회</span><span class="hint" style="text-align:center">평균</span></div>
+      <div id="miniRows"></div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn sm" onclick="miniAdd()">➕ 재료 추가</button>
+        <button class="btn primary sm" onclick="miniSave()">💾 저장</button>
+      </div>
+      <div id="miniMsg" class="note warn" style="margin-top:10px;display:none"></div>
+    </div>
+    <div class="card">
+      <h3>📈 결과</h3>
+      <div class="chartbox" id="miniChart"></div>
+      <div class="sentence" id="miniSentence" style="margin-top:10px;font-size:17px"></div>
+      <div class="note" style="margin-top:10px"><b>🔍 생각해 보기</b><br>· 뽁뽁이는 열은 잘 막는데 소리는? · 무거운 판과 가벼운 판 중 어느 쪽이 더 막았나요? · 판과 상자 사이 틈새를 손으로 눌러 막으면 숫자가 어떻게 변하나요?<br><span class="hint">여기서 잰 값은 '교실 방음 설계'에서 <b>우리 반 측정</b> 표시로 나타나요.</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🔧 실험 장치</h3>
+    <div class="row" style="align-items:flex-start">
+      <div style="flex:1;min-width:220px" class="rigbox" id="miniRig"></div>
+      <div style="flex:1;min-width:220px" class="note">① 상자 바닥에 소리 기기(스피커 위로) ② 판으로 입구를 뚜껑처럼 덮기(사방 1cm 넉넉하게) ③ 판 위에 종이컵 엎고 그 위에 측정 기기 ④ 같은 음량, 같은 위치, 같은 판 크기!<br><span class="hint">준비물: 상자 1, 우드락·계란판·뽁뽁이 판 각 1, 종이컵, 기기 2대(소리용·측정용)</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. 모둠 토의 ============ -->
+<section class="page" id="page-talk">
+  <div class="card mint">
+    <h2>💬 모둠 토의: 우리 교실에 소리는 어디로 들어올까?</h2>
+    <p class="sub">설계 전에 먼저 토의해요. 의견을 카드로 남기고 👍로 모둠 결정을 정해요.</p>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h3>1️⃣ 소리가 들어오는 길 순위 매기기</h3>
+      <p class="hint">우리 교실에서 <b>가장 시끄러운 길</b>부터 눌러요. (앱 설계에서 힌트로 써요)</p>
+      <div class="pill-group" id="pathRank"></div>
+      <div id="pathRankView" class="note" style="margin-top:10px"></div>
+      <h3 style="margin-top:16px">2️⃣ 토의 질문</h3>
+      <div class="grid" style="gap:8px">
+        <div class="note">Q1. 복도 소리가 들어오는 길은 벽일까, 문일까, 틈새일까?</div>
+        <div class="note">Q2. 소리콩이 모자라면 무엇부터 설치해야 할까? (비싼 게 꼭 좋을까?)</div>
+        <div class="note">Q3. 돈이 안 드는 방법(약속·습관)은 몇 dB이나 줄일 수 있을까?</div>
+        <div class="note">Q4. AI나 자료가 말한 것 중 우리 교실에는 안 맞는 건?</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>3️⃣ 토의 카드 남기기</h3>
+      <div class="row">
+        <select id="ideaKind" style="width:auto"><option value="의견">💡 의견</option><option value="질문">❓ 질문</option><option value="결정">✅ 모둠 결정</option></select>
+        <select id="ideaEv" style="width:auto">
+          <option value="">근거는?</option><option>AI에게 물어봤어요</option><option>소리 백과 데이터</option><option>미니 실험 결과</option><option>교과서에서 배웠어요</option><option>우리 교실을 살펴보니</option>
+        </select>
+      </div>
+      <textarea id="ideaText" placeholder="예: 문이 자주 열려 있으니 문 닫기 약속부터 하면 공짜로 5 dB!" style="margin-top:8px"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn mint" onclick="addIdea()">➕ 카드 추가</button>
+        <span class="hint">누가 말했는지는 반·번호로 남아요. 👍는 한 사람당 카드 1번 (다시 누르면 취소)</span>
+      </div>
+      <div id="talkSync" class="hint" style="margin-top:10px;font-weight:700">모둠 카드를 불러오는 중…</div>
+      <div id="ideaList" style="display:grid;gap:8px;margin-top:12px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. 교실 방음 설계 ============ -->
+<section class="page" id="page-room">
+  <div class="card lav">
+    <span class="star" style="right:18px;top:10px">✦</span>
+    <h2>🏫 가상 교실 방음 설계: 데이터로 고르고, 소리콩으로 사요</h2>
+    <p class="sub" style="margin:0">교실 그림에서 <b>위치를 누르고</b> 오른쪽에서 장치를 설치해요. 목표는 <b>55 dB 아래</b>(학교보건법)! 소리콩이 모자라면 퀴즈로 벌어요. 비싼 게 꼭 좋은 건 아니에요.</p>
+  </div>
+  <div class="room-wrap">
+    <div>
+      <div class="scene" id="scene"></div>
+      <div class="meter" style="margin-top:14px">
+        <div class="row" style="justify-content:space-between;align-items:flex-end">
+          <div><span class="hint">지금 우리 교실 소음</span><div class="big" id="dbNow">68 dB</div></div>
+          <div style="text-align:right"><span class="hint">처음 <b id="dbStart">68</b> dB → 줄인 소음</span><div class="jua" style="font-size:26px;color:var(--green)" id="dbCut">▼ 0 dB</div></div>
+          <div id="meterFace"></div>
+        </div>
+        <div class="gauge"><div class="pin" id="gaugePin"></div>
+          <span class="mark" style="left:0%">30</span><span class="mark" style="left:12.5%">35 WHO</span><span class="mark" style="left:50%">50</span><span class="mark" style="left:62.5%">55 기준</span><span class="mark" style="left:87.5%">65</span><span class="mark" style="left:100%">70</span></div>
+        <div class="paths" id="paths"></div>
+        <div class="goalbox" id="goals"></div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="padding:14px 16px">
+        <div class="costbar"><span>🫘 가진 콩 <b id="beanHave">20</b></span><span>쓴 콩 <b id="beanUsed">0</b></span><span>남음 <b id="beanLeft">20</b></span></div>
+        <div class="row" style="margin:10px 0 6px;justify-content:space-between">
+          <h3 style="margin:0" id="slotTitle">🛠️ 장치 고르기</h3>
+          <button class="btn sm butter" onclick="toggleQuiz()">🫘 퀴즈로 콩 벌기</button>
+        </div>
+        <div id="quizBox" style="display:none;margin-bottom:10px"></div>
+        <div class="shop-tabs" id="slotTabs"></div>
+        <div id="itemList"></div>
+        <span class="label">📝 설계 이유 (왜 이 순서로 설치했나요?)</span>
+        <textarea id="designReason" placeholder="예: 복도 쪽이 제일 시끄러워서 공짜인 문 닫기 약속부터 하고, 남은 콩으로 문풍지와 책장 벽을 골랐다."></textarea>
+        <div class="row" style="margin-top:10px">
+          <button class="btn primary" onclick="saveDesignNow()">💾 설계 저장</button>
+          <button class="btn sm" onclick="resetRoom()">↺ 처음부터</button>
+          <button class="btn sm lav" onclick="go('ai');pickCard('카드3')">🤖 AI에게 설계 상담</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. AI 파트너 ============ -->
+<section class="page" id="page-ai">
+  <div class="card lav">
+    <h2 id="aiTitle">🤖 AI 파트너: 프롬프트 카드로 물어봐요</h2>
+    <p class="sub" id="aiModeText">카드를 고르면 질문이 채워져요. ( ) 안을 우리 말로 바꾸고 <b>소리콩 AI에게 바로 물어봐요.</b> 물어본 뒤에는 <b>알게 된 것</b>을 내 말로 저장해요.</p>
+  </div>
+  <div class="grid g-ai">
+    <div style="display:grid;gap:10px;align-content:start">
+      <button class="cardbtn" data-c="카드1" onclick="pickCard('카드1')"><b>카드 ① 탐구 질문 점검</b><span>1차시 · 답 말고 질문 2개만</span></button>
+      <button class="cardbtn" data-c="카드2" onclick="pickCard('카드2')"><b>카드 ② 자료 물어보기</b><span>2차시 · 흡음·차음·틈새</span></button>
+      <button class="cardbtn" data-c="카드3" onclick="pickCard('카드3')"><b>카드 ③ 설계 상담</b><span>2~3차시 · 무엇부터 막을까?</span></button>
+      <button class="cardbtn" data-c="카드4" onclick="pickCard('카드4')"><b>카드 ④ 설계 비판 요청</b><span>3차시 · 실제와 다를 수 있는 이유 3가지</span></button>
+      <button class="cardbtn" data-c="자유" onclick="pickCard('자유')"><b>자유 질문</b><span>소리·방음이 궁금할 때</span></button>
+      <div class="note" id="aiTip"><b>🔍 의심하고 확인하기</b><br>AI가 답을 대신 써 주면 "답 말고 질문으로만 알려 줘"라고 다시 말해요. AI의 말 중 우리 실험에 맞는 것만 골라요.</div>
+    </div>
+    <div class="card">
+      <h3 id="cardTitle">카드를 골라 주세요</h3>
+      <textarea id="prompt" style="min-height:120px" placeholder="카드를 고르면 문장이 채워져요. ( ) 안을 우리 모둠 말로 바꿔요."></textarea>
+      <div class="row" style="margin-top:8px" id="aiBtnRow">
+        <button class="btn sm" onclick="copyText(document.getElementById('prompt').value,'프롬프트를 복사했어요! AI 노트북에 붙여넣어요')">📋 복사하기</button>
+        <button class="btn primary sm" id="askBtn" onclick="askNow()">💬 앱 안에서 물어보기</button>
+        <button class="btn sm butter" onclick="copyChatAll()">📒 대화 전체 복사 (탐구 기록장용)</button>
+      </div>
+      <div class="chat" id="chatBox" style="margin-top:10px"><div class="hint" style="margin:auto">대화가 여기에 쌓여요. 수업 끝에 '탐구 일지 → AI 대화 기록'에 붙여넣어요.</div></div>
+      <div class="row" style="margin-top:8px" id="aiFollowRow">
+        <input id="followup" placeholder="이어서 묻기: 그중 ( )번은 우리가 어떻게 확인해 볼 수 있어?" style="flex:1;min-width:200px">
+        <button class="btn sm lav" onclick="askFollow()">보내기</button>
+      </div>
+      <div id="researchPanel" style="display:none;margin-top:10px">
+        <div class="row">
+          <button class="btn primary sm" onclick="go('data')">📚 소리 백과에서 찾기</button>
+          <button class="btn sm" onclick="go('mini')">🧪 미니 실험 결과 보기</button>
+          <span class="hint">교과서 『과학』 3-2 84~85쪽도 함께 봐요.</span>
+        </div>
+        <div class="row" style="margin-top:8px"><span class="hint">어디에서 찾았나요?</span>
+          <select id="srcSel" style="width:auto"><option value="소리 백과">📚 소리 백과(재료 표·dB 사다리)</option><option value="교과서">📘 교과서</option><option value="공공데이터">🏛️ 공공데이터 링크</option><option value="미니 실험 결과">🧪 미니 실험 결과</option><option value="모둠 토의">💬 모둠 토의</option></select>
+        </div>
+      </div>
+      <div class="note gold" style="margin-top:12px">
+        <b id="learnedLabel">💡 AI에게 물어보고 알게 된 것</b> <span class="hint" id="learnedHint">AI 답을 그대로 베끼지 말고 <b>내 말로 한두 문장</b>!</span>
+        <textarea id="learned" style="min-height:70px;margin-top:6px" placeholder="예: 소리는 틈으로 새어 들어오니까 비싼 장치보다 문풍지로 틈을 먼저 막는 게 좋다는 걸 알았다."></textarea>
+        <div class="row" style="margin-top:6px"><button class="btn primary sm" onclick="saveLearnedNow()">💾 알게 된 것 저장</button><span class="hint" id="learnedCount"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ 5.5 탐구 일지 ============ -->
+<section class="page" id="page-journal">
+  <div id="journalHome">
+    <div class="card pinkc">
+      <span class="star" style="right:18px;top:10px">✦</span>
+      <div class="row" style="justify-content:space-between;align-items:flex-end">
+        <div>
+          <h2>📒 나의 탐구 일지</h2>
+          <p class="sub" style="margin:0">짧아도 괜찮아요. 내 생각을 <b>나의 말</b>로 남겨요. 차시마다 <b>돌아보기 1번 + AI 대화 기록 1번</b>!</p>
+        </div>
+        <div style="text-align:right"><b class="jua" style="font-size:22px"><span id="jDone">0</span> / <span id="jTotal">10</span> 완료</b><div class="hint" id="jWho">모둠과 반·번호를 먼저 적어요</div></div>
+      </div>
+      <div class="jbar"><i id="jBar"></i></div>
+    </div>
+    <div class="card"><div id="jList"></div></div>
+  </div>
+
+  <!-- 돌아보기 3단계 폼 -->
+  <div id="journalForm" style="display:none">
+    <div class="card">
+      <button class="btn sm" onclick="jBack()">← 나의 탐구 일지</button>
+      <span class="hint" style="float:right">작성한 내용은 이 기기에 자동 저장돼요</span>
+      <div class="tag" style="margin-top:14px;background:var(--pink)" id="jfTag">1차시</div>
+      <h2 style="margin-top:6px" id="jfTitle">오늘의 탐구를 돌아봐요</h2>
+      <p class="sub">짧아도 괜찮아요. 내 생각을 나의 말로 적어 봐요.</p>
+      <div class="jtabs" id="jTabs"><button class="on" onclick="jStep(0)">1. 오늘의 발견</button><button onclick="jStep(1)">2. 의심하고 확인하기</button><button onclick="jStep(2)">3. 다음 탐구로</button></div>
+
+      <div class="jstep" id="jStep0">
+        <span class="label">❓ 오늘의 탐구 질문</span>
+        <textarea id="jq" placeholder="오늘 우리 모둠이 알아보려고 한 것은?"></textarea>
+        <span class="label">💡 오늘 새로 알게 된 것</span>
+        <textarea id="jlearned" placeholder="예: 10dB이 줄면 귀에는 절반쯤 조용하게 들린다."></textarea>
+      </div>
+      <div class="jstep" id="jStep1" style="display:none">
+        <span class="label">🔍 오늘 탐구에서 AI의 말이나 결과를 의심하거나 다시 확인한 적이 있었나요?</span>
+        <div class="pill-group" id="jDoubtPills"><button class="pill" data-v="있었어요">있었어요</button><button class="pill" data-v="오늘은 없었어요">오늘은 없었어요</button></div>
+        <span class="label">그 순간을 적어 봐요 (무엇을, 어떻게 확인했나요?)</span>
+        <textarea id="jdoubt" placeholder="예: AI가 답을 정해 줘서 '질문으로만 알려 줘'라고 다시 물었다. / 분석기에 60·70·80을 넣어 평균 70이 맞는지 확인했다."></textarea>
+        <span class="label">🧗 어려웠던 점과 넘은 방법</span>
+        <textarea id="jhard" placeholder="예: 값이 자꾸 흔들려서 5초 동안 모두 조용히 하고 다시 쟀다."></textarea>
+      </div>
+      <div class="jstep" id="jStep2" style="display:none">
+        <span class="label">⭐ 오늘의 도전 점수</span>
+        <div class="pill-group" id="jScorePills"></div>
+        <span class="hint">1 조금 도전했어요 · 5 아주 많이 도전했어요</span>
+        <span class="label" style="margin-top:14px">💗 오늘의 마음 (한 단어)</span>
+        <div class="pill-group" id="jMoodPills"></div>
+        <input id="jmoodFree" placeholder="다른 말로 적어도 좋아요" style="margin-top:8px">
+        <span class="label">🚀 다음에 해보고 싶은 것</span>
+        <textarea id="jnext" placeholder="예: 스펀지를 2겹으로 겹쳐서 재 보고 싶다."></textarea>
+      </div>
+      <div class="row" style="margin-top:16px;justify-content:space-between">
+        <button class="btn sm" id="jPrev" onclick="jStep(jCur-1)">이전</button>
+        <button class="btn primary" id="jNext" onclick="jStep(jCur+1)">다음으로 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 시작 전 / 탐구 후 나의 생각 -->
+  <div id="thoughtForm" style="display:none">
+    <div class="card">
+      <button class="btn sm" onclick="jBack()">← 나의 탐구 일지</button>
+      <div class="tag" style="margin-top:14px;background:var(--sky)" id="tfTag">시작 전</div>
+      <h2 style="margin-top:6px" id="tfTitle">시작 전 나의 생각</h2>
+      <p class="sub" id="tfSub">정답은 없어요. 지금 생각을 솔직하게 적어요. 탐구가 끝나면 다시 적고 비교해 볼 거예요.</p>
+      <span class="label">1. 소음을 가장 잘 막는 재료는 무엇일 것 같나요? 왜 그렇게 생각하나요?</span>
+      <textarea id="t1"></textarea>
+      <span class="label">2. 탐구할 때 AI는 어떤 도움을 줄 수 있을까요? AI의 말을 그대로 믿어도 될까요?</span>
+      <textarea id="t2"></textarea>
+      <span class="label">3. 소리에 대해 궁금한 것 한 가지</span>
+      <textarea id="t3"></textarea>
+      <div class="row" style="margin-top:14px"><button class="btn primary" onclick="submitThought()">기록 제출하기 →</button></div>
+    </div>
+  </div>
+
+  <!-- AI 대화 기록 -->
+  <div id="chatLogForm" style="display:none">
+    <div class="card">
+      <button class="btn sm" onclick="jBack()">← 나의 탐구 일지</button>
+      <div class="tag" style="margin-top:14px;background:var(--lav)" id="clTag">1차시</div>
+      <h2 style="margin-top:6px">AI와 나눈 대화를 남겨요</h2>
+      <p class="sub">이번 차시에 AI와 주고받은 대화를 <b>전체 복사해서 붙여 넣으면</b> 돼요. (AI 노트북 대화창 → 전체 선택 → 복사)</p>
+      <div class="row" style="margin-bottom:6px">
+        <button class="btn sm lav" onclick="clFromApp()">🤖 앱 안 AI 대화 가져오기</button>
+        <span class="hint">앱 안에서 물어본 대화는 버튼 한 번으로 채워져요.</span>
+      </div>
+      <span class="label">대화 전체 붙여넣기</span>
+      <textarea id="clText" style="min-height:180px" placeholder="나: 소리는 어떻게 전달돼?&#10;AI: 소리는 진동으로 전달돼요." oninput="clPreview()"></textarea>
+      <div class="hint" id="clPrivacy" style="margin-top:4px">이름이나 전화번호가 들어 있지 않은지 살펴봐요.</div>
+      <span class="label">덧붙이고 싶은 말 (선택)</span>
+      <textarea id="clNote" style="min-height:60px" placeholder="예: AI가 말한 것 중 '스펀지가 제일 좋다'는 우리 실험으로 확인해 보기로 했다."></textarea>
+    </div>
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><h3 style="margin:0">💬 대화가 잘 나뉘었나요? <span class="tag" id="clCount">0개 발화</span></h3></div>
+      <p class="hint">이름표를 누르면 '나'와 'AI'를 바꿀 수 있어요. 이름표가 없는 줄은 앞 사람 말로 이어 붙어요.</p>
+      <div class="chat" id="clPreviewBox" style="height:auto;max-height:360px"><div class="hint" style="margin:auto">대화를 붙여 넣어 주세요</div></div>
+      <div class="row" style="margin-top:12px"><button class="btn primary" onclick="submitChatLog()">💾 대화 기록 제출하기</button></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ 7. 설계 발표 ============ -->
+<section class="page" id="page-present">
+  <div class="card butter noprint">
+    <h2>🏆 2분 발표: 우리 모둠 교실 방음 설계도</h2>
+    <p class="sub" id="presentSub">소리가 들어오는 길 → 설치한 것과 순서 → 줄인 dB → AI가 지적한 한계. 듣는 모둠은 질문 1개!</p>
+    <div class="row">
+      <button class="btn primary" onclick="buildPresent()">🪄 우리 모둠 설계도 만들기</button>
+      <button class="btn sm" onclick="window.print()">🖨️ 인쇄/PDF</button>
+      <button class="btn sm" onclick="savePresentNow()">💾 저장</button>
+    </div>
+  </div>
+  <div class="present" id="presentCard">
+    <div class="step"><div class="num">1</div><div><b class="jua" style="font-size:18px">🔊 소리가 들어오는 길</b><textarea id="pQ" placeholder="우리 교실에서 가장 시끄러운 길은…"></textarea></div></div>
+    <div class="step"><div class="num">2</div><div><b class="jua" style="font-size:18px">🏫 설치한 것 (순서대로)</b><div id="pItems" class="note" style="margin-top:4px;min-height:48px"></div></div></div>
+    <div class="step"><div class="num">3</div><div><b class="jua" style="font-size:18px">📊 결과</b><div class="sentence" id="pResult" style="font-size:18px"></div></div></div>
+    <div class="step"><div class="num">4</div><div><b class="jua" style="font-size:18px" id="pALabel">🤖 AI가 지적한 한계</b><textarea id="pA" placeholder="AI가 말한 것 중 우리 설계에 맞는 지적 1가지"></textarea>
+      <div class="sentence" style="font-size:17px;margin-top:6px">다만, <span class="blank" contenteditable="true" id="pBut" style="min-width:200px">　</span> 일 수 있다.</div></div></div>
+  </div>
+</section>
+
+<!-- ============ 7. 선생님 ============ -->
+<section class="page" id="page-teacher">
+  <div class="card">
+    <h2>👩‍🏫 선생님 보기</h2>
+    <div class="row">
+      <input id="pin" type="password" placeholder="비밀번호" style="width:160px">
+      <button class="btn primary sm" onclick="teacherLoad()">열기</button>
+      <a id="sheetLink" class="btn sm" target="_blank" style="display:none">📄 기록 스프레드시트 열기</a>
+    </div>
+    <p class="hint" style="margin-top:8px">모든 모둠의 토의·설계·측정·AI 대화가 스프레드시트에 자동 저장돼요. 수업 뒤 대화 로그를 한 번 더 복사해 두세요.</p>
+  </div>
+  <div id="teacherBox"></div>
+</section>
+
+</main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================================================================
+   데이터 (공공자료 기반)
+   =================================================================== */
+const LADDER = [
+  {db:100,txt:'자동차 경적, 착암기',c:'linear-gradient(90deg,#ff5d8f,#ff7bd5)'},
+  {db:90,txt:'소음이 심한 공장 안',c:'linear-gradient(90deg,#ff6b6b,#ff8a5c)'},
+  {db:80,txt:'지하철 안, 철로변',c:'linear-gradient(90deg,#ff8a5c,#ffa95c)'},
+  {db:70,txt:'전화벨, 거리의 라디오, 복도에서 뛰는 소리',c:'linear-gradient(90deg,#f5a524,#ffc94a)'},
+  {db:65,txt:'📏 학교 주변 공사장 낮 기준',base:true},
+  {db:60,txt:'보통 대화, 백화점 안',c:'linear-gradient(90deg,#d9b43a,#ffd36b)'},
+  {db:55,txt:'📏 교실 소음 기준 (학교보건법)',base:true},
+  {db:50,txt:'조용한 사무실',c:'linear-gradient(90deg,#2fbf98,#5ee6c1)'},
+  {db:40,txt:'조용한 집 거실',c:'linear-gradient(90deg,#2aa985,#4fd8b4)'},
+  {db:35,txt:'📏 WHO 교실 권고',base:true},
+  {db:30,txt:'조용한 농촌, 깊은 밤',c:'linear-gradient(90deg,#3d8fd6,#7fd1ff)'},
+  {db:20,txt:'나뭇잎 스치는 소리',c:'linear-gradient(90deg,#3a7cc0,#6fb8f0)'}
+];
+const MATS = [
+  {name:'스펀지(폴리우레탄폼)',emoji:'🧽',color:'#FFE27A',abs:0.80,note:'흡음 최고. 하지만 가벼워서 차음은 약해요'},
+  {name:'펠트',emoji:'🧶',color:'#FFB3C1',abs:0.74,note:'면 펠트 25mm'},
+  {name:'우드락(스티로폼)',emoji:'🧊',color:'#F2F6FA',abs:0.28,note:'가볍고 단단. 1차시에 직접 재 봐요'},
+  {name:'합판·책장',emoji:'🪵',color:'#D7A86E',abs:0.13,note:'흡음은 낮지만 무거워서 잘 막아요(차음)'},
+  {name:'유리창',emoji:'🪟',color:'#DDEEFF',abs:0.15,note:'한 겹 유리. 이중창은 사이 공기층이 소리를 막아요'},
+  {name:'계란판·뽁뽁이·골판지',emoji:'📦',color:'#E8C9A0',abs:null,note:'표에 없음 → 미니 실험으로!'},
+];
+const DATA_LINKS = [
+  {t:'국가소음정보시스템',o:'한국환경공단',u:'https://www.noiseinfo.or.kr/',d:'전국 소음 측정 지도, dB별 소음 예시, 기준표'},
+  {t:'소음의 종류와 영향',o:'한국환경공단',u:'https://www.noiseinfo.or.kr/inform/noise.do',d:'dB별 생활 소음 예시와 몸에 미치는 영향'},
+  {t:'부산광역시 소음자동측정시스템 월별 평균 소음도',o:'공공데이터포털',u:'https://www.data.go.kr/data/15121313/fileData.do',d:'부산 6개 지점 월별 평균 dB (CSV)'},
+  {t:'실시간 공항 소음측정 정보',o:'한국공항공사 · 공공데이터포털',u:'https://www.data.go.kr/data/15159597/openapi.do',d:'김해공항 주변 실시간 소음 (오픈API)'},
+  {t:'학교보건법 시행규칙',o:'법제처',u:'https://www.law.go.kr/법령/학교보건법시행규칙',d:'[별표 4] 교사 내 소음 55 dB(A) 이하'},
+  {t:'층간소음 FAQ',o:'한국환경공단 이웃사이센터',u:'https://floor.noiseinfo.or.kr/floornoise/home/notice/faq.do',d:'층간소음 기준표(직접충격 39/34, 공기전달 45/40 dB)'},
+  {t:'Sound Absorption Coefficients',o:'Engineering ToolBox',u:'https://engineeringtoolbox.com/accoustic-sound-absorption-d_68.html',d:'재료별 흡음률 표(영어)'},
+  {t:'NIOSH Sound Level Meter 앱',o:'미국 CDC/NIOSH',u:'https://www.cdc.gov/niosh/noise/about/app.html',d:'스마트폰 소음 앱 정확도 ±2 dB'},
+];
+const QUIZ = [
+  {q:'소음을 줄이는 두 가지 길이 아닌 것은?',o:['소리의 세기를 작게 하기','소리가 잘 전달되지 않게 하기','소리를 더 높게 만들기'],a:2,why:'교과서: 세기를 작게 하거나, 잘 전달되지 않게!'},
+  {q:'10 dB이 줄면 사람 귀에는?',o:['거의 그대로','절반쯤 조용하게','아예 안 들리게'],a:1,why:'10 dB 감소 = 절반쯤 조용하게 느껴요.'},
+  {q:'폭신한 계란판·스펀지가 잘하는 것은?',o:['소리를 흡수해 울림 줄이기(흡음)','무겁게 막기(차음)','소리를 더 크게'],a:0,why:'폭신한 재료는 흡음. 무겁고 빈틈없는 재료가 차음.'},
+  {q:'문이 조금 열려 틈이 있으면?',o:['소리가 거의 안 새요','소리가 많이 새요','상관없어요'],a:1,why:'틈새가 작아도 소리는 많이 새어요. 틈 막기가 먼저!'},
+  {q:'교실 소음 기준(학교보건법)은?',o:['35 dB','55 dB','75 dB'],a:1,why:'교사 내 소음 55 dB(A) 이하. WHO 권고는 35 dB.'},
+  {q:'측정값이 60, 70, 80이면 평균은?',o:['65','70','75'],a:1,why:'(60+70+80)÷3=70.'},
+];
+
+/* ---- 가상 교실 모형: 소리가 들어오는 길 4가지, 에너지 합으로 전체 소음 계산 ---- */
+const PATHS = {
+  hall:  {name:'복도 (벽·문)',   em:'🚪', base:65, c:'var(--peach-d)'},
+  win:   {name:'창문 (운동장)',   em:'🪟', base:60, c:'var(--sky-d)'},
+  up:    {name:'위층 (천장)',     em:'⬆️', base:50, c:'var(--lav-d)'},
+  inside:{name:'교실 안 (울림)',  em:'🗣️', base:58, c:'var(--butter-d)'},
+};
+const SLOTS = [
+  {k:'wall', name:'복도 쪽 벽',  em:'🧱'},
+  {k:'door', name:'복도 문',     em:'🚪'},
+  {k:'win',  name:'창문',        em:'🪟'},
+  {k:'ceil', name:'천장',        em:'🔼'},
+  {k:'floor',name:'바닥·책상',   em:'🪑'},
+  {k:'habit',name:'생활 약속',   em:'🤝'},
+];
+/* dB 값은 공개 자료를 초등 수준으로 단순화한 참고값. 원리: 흡음 / 차음 / 틈새 / 세기 줄이기 */
+const ITEMS = [
+  {id:'egg',    slot:'wall', name:'계란판 흡음판',      em:'🥚', cost:3, cut:{hall:2,inside:3}, p:'흡음', d:'폭신해서 교실 안 울림을 줄여요. 복도 소리를 막는 힘은 약해요.', mini:'계란판'},
+  {id:'felt',   slot:'wall', name:'펠트 벽보',          em:'🧶', cost:2, cut:{inside:2}, p:'흡음', d:'흡음률 0.74. 울림은 줄지만 복도 소리는 거의 못 막아요.'},
+  {id:'shelf',  slot:'wall', name:'책 가득 책장 벽',    em:'📚', cost:5, cut:{hall:6}, p:'차음', d:'무거운 재료가 소리를 막아요(질량). 흡음률은 낮아도 차음은 강해요.'},
+  {id:'panel',  slot:'wall', name:'방음 패널(스펀지+합판)', em:'🧱', cost:7, cut:{hall:8,inside:2}, p:'차음+흡음', d:'무거운 판 + 폭신한 층. 비싸지만 두 가지를 다 해요.'},
+  {id:'strip',  slot:'door', name:'문풍지로 틈새 막기',  em:'🧵', cost:2, cut:{hall:4}, p:'틈새', d:'문틈 1cm가 소리의 고속도로예요. 싸고 효과 큼!'},
+  {id:'close',  slot:'door', name:'문 닫기 약속',        em:'✅', cost:0, cut:{hall:5}, p:'틈새', d:'열린 문 vs 닫힌 문. 공짜인데 가장 큰 효과 중 하나.'},
+  {id:'dcurt',  slot:'door', name:'두꺼운 문 커튼',      em:'🎭', cost:4, cut:{hall:3,inside:1}, p:'흡음', d:'천은 흡수는 하지만 가벼워서 막는 힘은 약해요.'},
+  {id:'wclose', slot:'win',  name:'창문 닫기',           em:'✅', cost:0, cut:{win:6}, p:'틈새', d:'열린 창은 소리가 그대로 들어와요. 환기 시간만 열기.'},
+  {id:'bubble', slot:'win',  name:'뽁뽁이 붙이기',       em:'🫧', cost:2, cut:{win:1}, p:'차음?', d:'열은 잘 막지만 가볍고 얇아 소리는 거의 못 막아요. 미니 실험으로 확인!', mini:'뽁뽁이'},
+  {id:'curt',   slot:'win',  name:'두꺼운 커튼',         em:'🪟', cost:3, cut:{win:2,inside:1}, p:'흡음', d:'교과서에도 나오는 방법. 울림을 줄이고 조금 막아요.'},
+  {id:'double', slot:'win',  name:'이중창',              em:'🪟', cost:9, cut:{win:9}, p:'차음', d:'유리 사이 공기층이 소리를 막아요. 비싸지만 창문 쪽엔 최고.'},
+  {id:'tile',   slot:'ceil', name:'천장 흡음 타일',      em:'🔲', cost:6, cut:{inside:4,up:2}, p:'흡음', d:'교실 안 울림을 줄여 말소리가 또렷해져요.'},
+  {id:'upstairs',slot:'ceil',name:'위층에 부탁하기(실내화·뛰지 않기)', em:'🙏', cost:0, cut:{up:5}, p:'세기 줄이기', d:'소리를 내는 쪽에서 줄이는 게 제일 확실해요.'},
+  {id:'sock',   slot:'floor',name:'의자 다리 덮개',      em:'🧦', cost:1, cut:{inside:3}, p:'세기 줄이기', d:'의자 끄는 소리가 사라져요. 싸고 효과 좋음.'},
+  {id:'mat',    slot:'floor',name:'카펫·매트',           em:'🟫', cost:4, cut:{inside:4,up:1}, p:'흡음', d:'바닥 소리와 울림을 줄여요. 층간소음 줄이기 방법과 같아요.'},
+  {id:'slip',   slot:'floor',name:'실내화 신기',         em:'🥿', cost:0, cut:{inside:1}, p:'세기 줄이기', d:'교과서의 소음 줄이기 실천 방법.'},
+  {id:'walk',   slot:'habit',name:'복도에서 걷기 캠페인', em:'🚶', cost:1, cut:{hall:3}, p:'세기 줄이기', d:'복도 소음을 내는 쪽에서 줄여요. 포스터 1장 값.'},
+  {id:'voice',  slot:'habit',name:'목소리 3단계 약속',   em:'🤫', cost:0, cut:{inside:4}, p:'세기 줄이기', d:'우리 소리를 줄이는 공짜 방법. 지키기가 어려운 게 함정!'},
+];
+const GOALS=[{db:55,t:'학교보건법 기준',em:'📏'},{db:50,t:'조용한 교실',em:'🎯'},{db:35,t:'WHO 권고(꿈의 목표)',em:'🏆'}];
+const DEFAULT_BEANS=20;
+
+/* ===================================================================
+   상태
+   =================================================================== */
+let S = {group:'', nick:'', lesson:'1', beans:DEFAULT_BEANS, quizDone:[], ideas:[], installed:[], designReason:'', pathRank:[],
+  mini:[{name:'판 없음(기준)',values:['','','']},{name:'우드락',values:['','','']},{name:'계란판',values:['','','']},{name:'뽁뽁이',values:['','','']}],
+  chat:[], card:'', present:{}, journal:{}};
+let hasKey=false, curSlot='wall', curPage='home', NOAI=[];
+function noAI(){ return !!S.cls && NOAI.includes(+S.cls); }
+/* 기록 서버(앱스 스크립트) 주소 — 구글 시트에 그대로 저장돼요 */
+const API_URL='https://script.google.com/macros/s/AKfycbyUFNRPXfrXH1Ft6Uer9lomlUQekvxTrDyGWHwl9P16NBoXYdwq5NTF6eGK5AOYt_37UA/exec';
+const inGAS = (typeof google !== 'undefined' && google.script && google.script.run);
+const hasGAS = !!(inGAS || API_URL);
+function GK(){ return S.cls ? (S.cls+'반 '+S.group) : String(S.group); }
+function key(){ return 'sorikong2_'+(S.group||'tmp'); }
+function save(){ try{ localStorage.setItem(key(), JSON.stringify(S)); }catch(e){} }
+function load(g){ try{ const j = localStorage.getItem('sorikong2_'+g); if(j){ const o=JSON.parse(j); S={...S,...o,group:g}; } }catch(e){} }
+
+function srv(fn, ...args){
+  return new Promise((res,rej)=>{
+    if(inGAS){ google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...args); return; }
+    if(!API_URL){ console.log('[mock]',fn,args); setTimeout(()=>res(fn==='getConfig'?{hasKey:false,model:'(미리보기)'}:(fn==='askGemini'?{ok:false,error:'NO_KEY'}:true)),300); return; }
+    fetch(API_URL,{method:'POST',body:JSON.stringify({fn,args})})
+      .then(r=>r.json())
+      .then(j=>{ if(j&&j.ok) res(j.result); else rej(new Error((j&&j.error)||'서버 오류')); })
+      .catch(e=>rej(e));
+  });
+}
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._x); t._x=setTimeout(()=>t.classList.remove('show'),2200); }
+function copyText(t,msg){ navigator.clipboard?.writeText(t).then(()=>toast(msg||'복사했어요')).catch(()=>{ const ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); toast(msg||'복사했어요'); }); }
+function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+
+/* ===================================================================
+   마스코트 소리콩 (SVG)
+   =================================================================== */
+const POSE_BY_COLOR={'#9BE3C9':'cheer','#FFDD6B':'wave','#FFB38A':'think','#FF9E9E':'noisy'};
+function mascotImg(pose,size){ const A=window.ART||{}; const src=A['m_'+pose]; return src?`<img src="${src}" width="${size}" height="${size}" style="object-fit:contain" alt="소리콩">`:''; }
+function mascotSVG(size, body, cups){
+  if(window.ART&&ART.m_wave){ return mascotImg(POSE_BY_COLOR[body]||'wave', size); }
+  body = body||'#FFDD6B'; cups = cups||'#C3B8FF';
+  return `<svg width="${size}" height="${size}" viewBox="0 0 120 120" aria-label="소리콩">
+    <path d="M14 70 A46 46 0 0 1 106 70" fill="none" stroke="#23305B" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="60" cy="70" r="40" fill="${body}" stroke="#23305B" stroke-width="4"/>
+    <rect x="6" y="56" width="18" height="30" rx="8" fill="${cups}" stroke="#23305B" stroke-width="3.5"/>
+    <rect x="96" y="56" width="18" height="30" rx="8" fill="${cups}" stroke="#23305B" stroke-width="3.5"/>
+    <ellipse cx="46" cy="66" rx="5" ry="6.5" fill="#23305B"/><ellipse cx="74" cy="66" rx="5" ry="6.5" fill="#23305B"/>
+    <circle cx="48" cy="63.5" r="1.8" fill="#fff"/><circle cx="76" cy="63.5" r="1.8" fill="#fff"/>
+    <ellipse cx="38" cy="80" rx="7" ry="4" fill="#FFB3C1" opacity=".9"/><ellipse cx="82" cy="80" rx="7" ry="4" fill="#FFB3C1" opacity=".9"/>
+    <path d="M53 80 C57 86 63 86 67 80" fill="none" stroke="#23305B" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M110 60 A14 14 0 0 1 110 80" fill="none" stroke="#23305B" stroke-width="3" stroke-linecap="round"/>
+    <path d="M116 54 A22 22 0 0 1 116 86" fill="none" stroke="#23305B" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+  </svg>`;
+}
+
+
+/* ===================================================================
+   내비게이션
+   =================================================================== */
+function go(p){
+  document.querySelectorAll('section.page').forEach(s=>s.classList.toggle('show', s.id==='page-'+p));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.page===p));
+  window.scrollTo({top:0,behavior:'smooth'});
+  curPage=p;
+  if(p==='room') renderRoom(); if(p==='talk'){ renderTalk(); pollTalk(true); } if(p==='mini') renderMini(); if(p==='journal'){ jShow('journalHome'); renderJournal(); }
+}
+document.querySelectorAll('.nav-btn').forEach(b=>b.onclick=()=>go(b.dataset.page));
+
+/* ===================================================================
+   0. 시작
+   =================================================================== */
+function renderHome(){
+  const gp=document.getElementById('groupPills'); gp.innerHTML='';
+  for(let i=1;i<=8;i++){ const b=document.createElement('button'); b.className='pill'+(S.group==String(i)?' on':''); b.textContent=i+'모둠'; b.onclick=()=>{ if(S.group!==String(i)){ save(); S={...S,group:String(i)}; load(String(i)); } renderAll(); }; gp.appendChild(b); }
+  const lp=document.getElementById('lessonPills'); lp.innerHTML='';
+  const names=noAI()?{1:'소리 알기·미니 실험',2:'자료 조사·토의·설계',3:'설계 다듬기·검토',4:'발표·돌아보기'}:{1:'소리 알기·미니 실험',2:'AI 조사·토의·설계',3:'설계 다듬기·AI 비판',4:'발표·돌아보기'};
+  for(let i=1;i<=4;i++){ const b=document.createElement('button'); b.className='pill'+(S.lesson==String(i)?' on':''); b.textContent=i+'차시 '+names[i]; b.onclick=()=>{S.lesson=String(i); save(); renderAll();}; lp.appendChild(b); }
+  const cs=document.getElementById('cls'); if(!cs.options.length){ cs.innerHTML='<option value="">반 선택</option>'+Array.from({length:12},(_,i)=>`<option value="${i+1}">${i+1}반</option>`).join(''); }
+  cs.value=S.cls||''; document.getElementById('num').value=S.num||'';
+  const J=[['1차시','소리를 알고, 상자로 체험하기','소리 백과(dB·기준·두 가지 원리) → 미니 실험(우드락·계란판·뽁뽁이 1번씩) → 결과 한 문장','mint'],
+           noAI()?['2차시','자료를 조사하고 교실 설계하기','조사 카드②로 소리 백과·교과서 찾기 → 소리가 들어오는 길 토의 → 가상 교실 설계 1차','lav']:['2차시','AI와 조사하고 교실 설계하기','카드②로 AI 노트북에 묻기 → 소리가 들어오는 길 토의 → 가상 교실 설계 1차','lav'],
+           noAI()?['3차시','데이터로 설계 다듬기','퀴즈로 콩 벌기 → 설계 고치기(어디부터?) → 조사 카드④로 한계 찾기 → "다만 ~일 수 있다"','peach']:['3차시','데이터로 설계 다듬기','퀴즈로 콩 벌기 → 설계 고치기(어디부터?) → 카드④ AI 비판 → "다만 ~일 수 있다"','peach'],
+           ['4차시','설계 발표와 돌아보기','설계도 만들기 → 모둠별 2분 발표 → 탐구 후 나의 생각 → 사후 설문','butter']];
+  document.getElementById('journey').innerHTML = J.map(j=>`<div class="jstepline ${S.lesson===j[0][0]?'cur':''}"><span class="chip ${j[3]}">${j[0]}</span><div><b>${j[1]}</b><div class="hint">${j[2]}</div></div></div>`).join('');
+  const T={
+   1:['📚 <b>소리 백과</b>에서 dB 사다리, 55 dB 기준, 소음을 줄이는 두 가지 길 보기','🧪 <b>미니 실험</b>: 판 없음 → 우드락 → 계란판 → 뽁뽁이 한 번씩 재기 (틈새도 눌러 보기!)','✍️ 결과 한 문장: 무엇이 가장 많이 막았나? 뽁뽁이는?','📒 <b>탐구 일지</b>: 시작 전 나의 생각 → 1차시 돌아보기'],
+   2:['🤖 <b>AI 파트너 카드②</b>로 재료·원리 묻기 → 알게 된 것을 토의 카드로','💬 <b>모둠 토의</b>: 소리가 들어오는 길 순위 매기기','🏫 <b>교실 방음 설계</b> 1차: 공짜 약속부터? 비싼 이중창부터? 소리콩 20개로','📒 <b>탐구 일지</b>: 2차시 돌아보기 + AI 대화 기록'],
+   3:['🫘 퀴즈로 콩 벌고 설계 고치기 — 가장 시끄러운 길부터 막았나?','📊 설계 이유 쓰기: 데이터(흡음·차음·틈새)로 설명','🤖 <b>카드④</b>로 AI에게 설계 비판 요청 → 맞는 지적 1개 고르기','📒 <b>탐구 일지</b>: 3차시 돌아보기 + AI 대화 기록'],
+   4:['🏆 <b>설계 발표</b> 카드 만들기 (길 → 설치 순서 → 줄인 dB → AI 지적)','🎤 모둠별 2분 발표, 듣는 모둠은 질문 1개','📒 <b>탐구 일지</b>: 4차시 돌아보기 + AI 대화 기록 + 탐구 후 나의 생각','📝 사후 설문']};
+  if(noAI()){
+   T[2]=['📚 <b>조사 카드②</b>로 소리 백과·교과서에서 재료·원리 찾기 → 알게 된 것을 토의 카드로','💬 <b>모둠 토의</b>: 소리가 들어오는 길 순위 매기기','🏫 <b>교실 방음 설계</b> 1차: 공짜 약속부터? 비싼 이중창부터? 소리콩 20개로','📒 <b>탐구 일지</b>: 2차시 돌아보기'];
+   T[3]=['🫘 퀴즈로 콩 벌고 설계 고치기 — 가장 시끄러운 길부터 막았나?','📊 설계 이유 쓰기: 데이터(흡음·차음·틈새)로 설명','📚 <b>조사 카드④</b>로 우리 설계가 실제와 다를 수 있는 이유 찾기 → 1개 고르기','📒 <b>탐구 일지</b>: 3차시 돌아보기'];
+   T[4]=['🏆 <b>설계 발표</b> 카드 만들기 (길 → 설치 순서 → 줄인 dB → 우리가 찾은 한계)','🎤 모둠별 2분 발표, 듣는 모둠은 질문 1개','📒 <b>탐구 일지</b>: 4차시 돌아보기 + 탐구 후 나의 생각','📝 사후 설문'];
+  }
+  document.getElementById('todo').innerHTML = (T[S.lesson]||T[1]).map(t=>`<div class="todo-row"><span class="box">✦</span><span>${t}</span></div>`).join('');
+  document.getElementById('chipGroup').textContent = S.group? `🏠 ${S.group}모둠 · ${S.nick||'반·번호 없음'}` : '🏠 모둠 선택';
+  document.getElementById('chipLesson').textContent = `📘 ${S.lesson}차시`;
+  document.getElementById('beanCount').textContent = S.beans;
+}
+function startSession(){
+  S.cls = document.getElementById('cls').value; S.num = String(document.getElementById('num').value||'').trim();
+  if(!S.group){ toast('모둠 번호를 먼저 골라요!'); return; }
+  if(!S.cls){ toast('우리 반을 골라 주세요'); return; }
+  if(!S.num || !(+S.num>=1 && +S.num<=40)){ toast('내 번호를 적어 주세요 (1~40)'); return; }
+  S.nick = `${S.cls}반 ${+S.num}번`;
+  save(); renderAll(); srv('logVisit', GK(), S.nick, S.lesson).catch(()=>{}); autoRestore(false);
+  toast(`${S.group}모둠 ${S.nick}, 탐구 시작!`); go(S.lesson==='1'?'data':(S.lesson==='2'?'talk':(S.lesson==='3'?'room':'present')));
+}
+async function restoreFromServer(){ if(!S.group||!S.cls||!S.nick){ toast('모둠·반·번호를 먼저 적고 시작해요'); go('home'); return; } toast('불러오는 중…'); const n=await autoRestore(true); if(n===0) toast('불러올 기록이 없어요'); }
+function miniHasValues(){ return (S.mini||[]).some(r=>(r.values||[]).some(v=>v!==''&&v!=null)); }
+async function autoRestore(force){
+  if(!hasGAS||!S.group||!S.cls||!S.nick) return -1;
+  S._rs=S._rs||{}; const k=GK()+'|'+S.nick; if(S._rs[k]&&!force) return -1;
+  try{
+    const d=await srv('restoreFor', S.group, S.cls, S.nick); S._rs[k]=1; let n=0;
+    if(d.design&&d.design[0]&&(force||!S.installed.length)){ const r=d.design[0]; S.installed=String(r[4]||'').split(',').map(x=>x.trim()).map(nm=>ITEMS.find(i=>i.name===nm)).filter(Boolean).map(i=>i.id); S.designReason=r[10]||S.designReason||''; const cost=+r[5]||0; if(cost>S.beans) S.beans=cost; n++; }
+    if(d.measure&&d.measure.length&&(force||!miniHasValues())){ const last=d.measure[d.measure.length-1][0]; const rows=d.measure.filter(r=>r[0]===last); if(rows.length){ S.mini=rows.map(r=>({name:r[3],values:r.slice(4,7).map(v=>v===''?'':+v)})); n++; } }
+    if(d.chat&&d.chat.length&&(force||!S.chat.length)){ S.chat=d.chat.map(r=>({card:r[3],role:r[4]==='AI'?'model':'user',text:r[5],lesson:String(r[2]),nick:r[4]==='AI'?'':r[4]})); n++; }
+    if(d.journal){ const J=S.journal=S.journal||{}; const map={'시작 전':'pre','1차시':'r1','2차시':'r2','3차시':'r3','4차시':'r4','탐구 후':'post'};
+      (d.journal.items||[]).forEach(it=>{ const jk=map[it]; if(jk){ J[jk]=J[jk]||{}; if(!J[jk].done){ J[jk].done=true; n++; } } });
+      (d.journal.chats||[]).forEach(l=>{ const jk='c'+l; if(['c1','c2','c3','c4'].includes(jk)){ J[jk]=J[jk]||{}; if(!J[jk].done){ J[jk].done=true; n++; } } }); }
+    save(); renderAll(); if(n>0) toast('☁️ 지난 기록을 불러왔어요'); return n;
+  }catch(e){ console.log('restore fail',e); if(force) toast('불러오기 실패: '+(e.message||e)); return -1; }
+}
+
+/* ===================================================================
+   1. 소리 백과
+   =================================================================== */
+function renderData(){
+  document.getElementById('ladder').innerHTML = LADDER.map(r=>`<div class="rung ${r.base?'base':''}"><span class="db">${r.db}</span><div class="bar"><div class="fx" style="background:${r.c||'transparent'};width:${r.db}%"></div><span>${r.txt}</span></div></div>`).join('');
+  document.getElementById('matCards').innerHTML = MATS.map(m=>`<div class="mat"><div class="sw" style="background:${m.color}"></div><div class="nm">${m.emoji} ${m.name}</div><div class="meter" style="padding:0;box-shadow:none;border-radius:999px;height:12px;border-width:2px"><i style="display:block;height:100%;width:${m.abs==null?0:Math.round(m.abs*100)}%;background:var(--mint-d);border-radius:999px"></i></div><div><b>${m.abs==null?'? (표에 없음)':'흡음률 '+m.abs}</b></div><div class="q">${m.note}</div></div>`).join('');
+  document.getElementById('dataLinks').innerHTML = DATA_LINKS.map(l=>`<div class="note"><b>${l.t}</b> <span class="tag">${l.o}</span><div class="hint">${l.d}</div><a href="${l.u}" target="_blank" class="hint">${l.u}</a></div>`).join('');
+}
+
+/* ===================================================================
+   2. 미니 실험
+   =================================================================== */
+function mstat(r){ const v=r.values.map(Number).filter((x,i)=>r.values[i]!==''&&!isNaN(x)); if(!v.length)return{n:0}; return {n:v.length,mean:v.reduce((a,b)=>a+b,0)/v.length}; }
+function renderMini(){
+  const base=mstat(S.mini[0]); const box=document.getElementById('miniRows'); box.innerHTML='';
+  S.mini.forEach((r,i)=>{ const st=mstat(r); const row=document.createElement('div'); row.className='cond';
+    row.innerHTML=`<span class="hint">${i===0?'기준':i}</span><input value="${esc(r.name)}" style="text-align:left;padding:7px 8px;font-size:13px" oninput="S.mini[${i}].name=this.value;save();miniDraw()">`+
+      [0,1,2].map(j=>`<input type="number" inputmode="decimal" step="0.1" value="${r.values[j]}" placeholder="${j===0?'dB':''}" oninput="miniSet(${i},${j},this.value)">`).join('')+
+      `<span class="mean">${st.n?st.mean.toFixed(1):'–'}</span>`;
+    box.appendChild(row); });
+  miniDraw();
+  document.getElementById('miniRig').innerHTML=`<svg viewBox="0 0 340 230" width="100%" style="max-height:230px">
+    <rect x="70" y="110" width="180" height="105" rx="10" fill="#F2E7D5" stroke="#23305B" stroke-width="4"/>
+    <text x="160" y="205" text-anchor="middle" font-size="12" fill="#46527A" font-family="Noto Sans KR">상자 (안쪽에서 소리)</text>
+    <rect x="135" y="160" width="50" height="28" rx="6" fill="#23305B"/><circle cx="160" cy="174" r="8" fill="#8EC5FF" stroke="#fff" stroke-width="2"/>
+    <path d="M120 150 q-8 20 0 40 M105 140 q-14 30 0 60 M200 150 q8 20 0 40 M215 140 q14 30 0 60" fill="none" stroke="#23305B" stroke-width="2.5" opacity=".5"/>
+    <rect x="58" y="94" width="204" height="16" rx="4" fill="#FFE27A" stroke="#23305B" stroke-width="3"/><text x="270" y="107" font-size="12" fill="#46527A" font-family="Noto Sans KR">재료 판 1장</text>
+    <path d="M140 92 l0 -12 h40 l0 12" fill="#fff" stroke="#23305B" stroke-width="3"/>
+    <rect x="148" y="54" width="24" height="26" rx="5" fill="#23305B"/><rect x="152" y="58" width="16" height="16" rx="2" fill="#DDEEFF"/>
+    <text x="178" y="70" font-size="11" fill="#46527A" font-family="Noto Sans KR">종이컵 + 측정 기기</text>
+    <text x="20" y="34" font-size="13" fill="#23305B" font-family="Jua">📱 여기서 dB을 재요 · 재는 동안 쉿!</text></svg>`;
+}
+function miniSet(i,j,v){ S.mini[i].values[j]=v===''?'':Number(v); save(); miniDraw(); const a=document.activeElement; }
+function miniAdd(){ if(S.mini.length>=6){toast('재료는 5가지까지');return;} S.mini.push({name:'',values:['','','']}); save(); renderMini(); }
+function miniData(){ const base=mstat(S.mini[0]); return {base, d:S.mini.map((r,i)=>({name:r.name||(i===0?'판 없음':'재료'+i),st:mstat(r),i})).filter(x=>x.st.n)}; }
+function miniDraw(){
+  const {base,d}=miniData(); const el=document.getElementById('miniChart'); const se=document.getElementById('miniSentence');
+  document.querySelectorAll('#miniRows .cond').forEach((row,i)=>{ const st=mstat(S.mini[i]); row.querySelector('.mean').textContent=st.n?st.mean.toFixed(1):'–'; });
+  if(!d.length){ el.innerHTML='<div class="hint" style="padding:40px;text-align:center">측정값을 넣으면 그래프가 생겨요 📊</div>'; se.innerHTML=''; return; }
+  const W=440,H=230,pl=40,pr=12,pt=26,pb=50; const means=d.map(x=>x.st.mean); const max=Math.max(...means)+5, min=Math.max(0,Math.min(...means)-10);
+  const x=i=>pl+(W-pl-pr)*(i+0.5)/d.length, y=v=>pt+(H-pt-pb)*(1-(v-min)/(max-min));
+  const rest=d.filter(v=>v.i!==0); const minMean=rest.length?Math.min(...rest.map(v=>v.st.mean)):null;
+  const colors=['#B8A9FF','#7FD8BE','#FFB38A','#FFC94A','#8EC5FF','#FFB3C1'];
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" font-family="Noto Sans KR">`;
+  for(let g=0;g<=4;g++){ const v=min+(max-min)*g/4; s+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="#DCE3F0"/><text x="${pl-6}" y="${y(v)+4}" font-size="10" text-anchor="end" fill="#46527A">${v.toFixed(0)}</text>`; }
+  if(base.n) s+=`<line x1="${pl}" x2="${W-pr}" y1="${y(base.mean)}" y2="${y(base.mean)}" stroke="#23305B" stroke-dasharray="5 4"/>`;
+  const bw=Math.min(70,(W-pl-pr)/d.length*0.6);
+  d.forEach((v,i)=>{ const hi=v.st.mean===minMean&&v.i!==0; const c=v.i===0?'#F3EEE6':colors[(v.i-1)%colors.length];
+    s+=`<rect x="${x(i)-bw/2}" y="${y(v.st.mean)}" width="${bw}" height="${H-pb-y(v.st.mean)}" rx="8" fill="${c}" stroke="#23305B" stroke-width="${hi?4:2.5}"/>`;
+    s+=`<text x="${x(i)}" y="${y(v.st.mean)-8}" font-size="12" font-weight="700" text-anchor="middle" fill="#23305B">${v.st.mean.toFixed(1)}${hi?' ⭐':''}</text>`;
+    s+=`<text x="${x(i)}" y="${H-pb+16}" font-size="11" text-anchor="middle" fill="#23305B">${esc(v.name).slice(0,9)}</text>`;
+    if(v.i!==0&&base.n){ const dv=base.mean-v.st.mean; s+=`<text x="${x(i)}" y="${H-pb+32}" font-size="11" text-anchor="middle" fill="${dv>=0?'#2E9E6E':'#D9534F'}" font-weight="700">${dv>=0?'▼':'▲'}${Math.abs(dv).toFixed(1)} dB</text>`; } });
+  s+=`<text x="${pl}" y="14" font-size="12" fill="#46527A">소리 크기 (dB)</text></svg>`; el.innerHTML=s;
+  if(rest.length&&base.n){ const best=rest.reduce((a,b)=>a.st.mean<b.st.mean?a:b); const worst=rest.length>1?rest.reduce((a,b)=>a.st.mean>b.st.mean?a:b):null;
+    const bdn=base.mean-best.st.mean, bd=Math.abs(bdn).toFixed(1); const wdn=worst?base.mean-worst.st.mean:0, wd=Math.abs(wdn).toFixed(1);
+    const B=n=>`<span class="blank">${esc(n)}</span>`;
+    let main;
+    if(bdn<=0){ main=`우리 실험에서는 어떤 판도 소음을 줄이지 못했다. ${B(best.name)}${josa(best.name,'이','가')} 그나마 ${bdn===0?'같았다':'▲'+bd+' dB 커졌다'}.`; }
+    else { main=`우리 실험에서는 ${B(best.name)}${josa(best.name,'이','가')} 소음을 가장 많이 줄였다 (▼${bd} dB).`;
+      if(worst&&worst!==best){ main+=wdn>=0?` ${B(worst.name)}${josa(worst.name,'은','는')} ▼${wd} dB만 줄였다.`:` ${B(worst.name)}${josa(worst.name,'은','는')} 오히려 ▲${wd} dB 커졌다.`; } }
+    const tips=[];
+    if(bdn>=10) tips.push('10 dB 넘게 줄었으니 귀에는 절반쯤 조용해졌어요! 👂');
+    if(rest.some(v=>Math.abs(base.mean-v.st.mean)<2)) tips.push('⚠️ 2 dB 안 차이는 앱 오차 범위라 "거의 못 막았다"고 봐야 해요.');
+    if(rest.some(v=>base.mean-v.st.mean<-2)) tips.push('🤔 판을 덮었는데 소리가 더 커졌어요? 음량·거리·기기 위치가 같았는지 확인하고 다시 재 보세요.');
+    se.innerHTML=`<div>${main}</div><div class="hint" style="font-family:'Noto Sans KR';font-size:13px;line-height:1.5;margin-top:8px">${tips.join('<br>')}</div>`;
+    S.present.mini=bdn>0?`${best.name}${josa(best.name,'이','가')} 가장 많이 줄임(▼${bd} dB)`:`줄인 판 없음(다시 재기)`; save(); }
+  else se.innerHTML='<span class="hint" style="font-family:\'Noto Sans KR\';font-size:14px">기준(판 없음)과 재료 1개 이상을 재면 문장이 완성돼요.</span>';
+}
+function miniSave(){ if(!S.group){toast('모둠을 먼저 골라요');go('home');return;} const base=mstat(S.mini[0]); const rows=S.mini.filter(r=>mstat(r).n).map(r=>{const st=mstat(r);return{name:r.name,values:r.values,mean:+st.mean.toFixed(2),delta:(r!==S.mini[0]&&base.n)?+(base.mean-st.mean).toFixed(2):''};}); if(!rows.length){toast('측정값을 먼저 넣어요');return;} srv('saveMeasurements',GK(),S.lesson,rows).then(()=>toast('측정값을 저장했어요 ☁️')).catch(()=>toast('저장 실패 (기기에는 남아 있어요)')); }
+function josa(w,a,b){ const c=(w||'').trim().slice(-1).charCodeAt(0); if(c<0xAC00||c>0xD7A3) return a+'('+b+')'; return ((c-0xAC00)%28)?a:b; }
+function miniCut(label){ const base=mstat(S.mini[0]); const r=S.mini.find(x=>x.name&&x.name.includes(label)); if(!r||!base.n) return null; const st=mstat(r); if(!st.n) return null; return +(base.mean-st.mean).toFixed(1); }
+
+/* ===================================================================
+   3. 모둠 토의
+   =================================================================== */
+function renderTalk(){
+  const pr=document.getElementById('pathRank'); pr.innerHTML='';
+  Object.keys(PATHS).forEach(k=>{ const b=document.createElement('button'); const idx=S.pathRank.indexOf(k); b.className='pill'+(idx>=0?' on':''); b.textContent=(idx>=0?(idx+1)+'위 ':'')+PATHS[k].em+' '+PATHS[k].name; b.onclick=()=>{ if(idx>=0) S.pathRank.splice(idx,1); else S.pathRank.push(k); save(); renderTalk(); }; pr.appendChild(b); });
+  document.getElementById('pathRankView').innerHTML = S.pathRank.length? `우리 모둠 생각: <b>${S.pathRank.map((k,i)=>(i+1)+'위 '+PATHS[k].name).join(' → ')}</b><div class="hint">설계할 때 1위부터 막아 보고, 전체 dB이 얼마나 변하는지 확인해요.</div>` : '<span class="hint">아직 순위를 정하지 않았어요. 가장 시끄러운 길부터 눌러요.</span>';
+  renderIdeas(true); syncBadge();
+}
+let _ideasHtml='';
+function renderIdeas(force){
+  const list=document.getElementById('ideaList'); const kindCls={의견:'',질문:'question',결정:'decision'}; const kindIc={의견:'💡',질문:'❓',결정:'✅'};
+  const html = S.ideas.length? S.ideas.map((it,i)=>({it,i})).reverse().map(({it,i})=>`<div class="idea ${kindCls[it.kind]||''}${it.nick===S.nick?' me':''}"><span class="who">${kindIc[it.kind]||''} ${esc(it.nick)}${it.nick===S.nick?' (나)':''} <span class="hint">${it.lesson&&it.lesson!==S.lesson?it.lesson+'차시 · ':''}${esc(it.t||'')}${it.pending?' · 올리는 중…':''}${it.failed?' · ⚠️ 모둠에 안 올라감':''}</span></span><button class="btn sm vote${it.mine?' voted':''}" onclick="vote(${i})">👍 ${it.votes||0}</button><div class="txt">${esc(it.text)}</div><div class="ev">${it.ev?'근거: '+esc(it.ev):''}</div></div>`).join('') : '<div class="hint">아직 카드가 없어요. 첫 의견을 남겨 보세요!</div>';
+  if(force || html!==_ideasHtml){ list.innerHTML=html; _ideasHtml=html; }
+}
+function addIdea(){
+  const text=document.getElementById('ideaText').value.trim(); if(!text){toast('내용을 적어 주세요');return;}
+  if(!S.group||!S.nick){toast('시작 화면에서 모둠과 반·번호를 먼저!');go('home');return;}
+  const it={t:new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false}),lesson:S.lesson,nick:S.nick,kind:document.getElementById('ideaKind').value,text,ev:document.getElementById('ideaEv').value,votes:0,mine:false,pending:hasGAS?1:0,tmp:Date.now()};
+  S.ideas.push(it); document.getElementById('ideaText').value=''; save(); renderIdeas();
+  srv('saveDiscussion',{group:GK(),lesson:S.lesson,nick:it.nick,kind:it.kind,text:it.text,evidence:it.ev,votes:0})
+    .then(r=>{ it.pending=0; if(r&&r.row) it.row=r.row; save(); toast('카드를 모둠에 올렸어요 ☁️'); pollTalk(true); })
+    .catch(()=>{ it.pending=0; it.failed=1; save(); renderIdeas(); toast('저장 실패 (기기에는 남아 있어요)'); });
+}
+function vote(i){
+  const it=S.ideas[i]; if(!it) return;
+  if(!hasGAS || !it.row){ if(it.pending){toast('카드를 올리는 중이에요. 잠시 뒤 눌러요');return;} it.mine=!it.mine; it.votes=Math.max(0,(it.votes||0)+(it.mine?1:-1)); save(); renderIdeas(); return; }
+  if(!S.nick){ toast('시작 화면에서 반·번호를 먼저!'); return; }
+  it.mine=!it.mine; it.votes=Math.max(0,(it.votes||0)+(it.mine?1:-1)); renderIdeas();
+  srv('voteDiscussion',GK(),it.row,S.nick).then(r=>{ if(r){ it.votes=r.votes; it.mine=r.mine; save(); renderIdeas(); } }).catch(()=>toast('👍 저장 실패. 다시 눌러 주세요'));
+}
+
+/* 토의 실시간 공유: 토의 화면이 열려 있는 동안 4초마다 모둠 카드를 다시 읽어요 */
+let _polling=false, _lastSync=0;
+function pollTalk(now){
+  if(!hasGAS || !S.group || _polling) return;
+  if(!now && (curPage!=='talk' || document.hidden)) return;
+  _polling=true;
+  srv('loadTalk',GK(),S.nick,S.group,S.cls).then(cards=>{
+    _polling=false; if(!Array.isArray(cards)) return;
+    S.ideas.forEach(x=>{ if(!x.row && x.pending && Date.now()-(x.tmp||0)>30000){ x.pending=0; x.failed=1; } });
+    const local=S.ideas.filter(x=>!x.row && (x.pending||x.failed));
+    S.ideas = cards.map(c=>({row:c.row,t:c.t,lesson:c.lesson,nick:c.nick,kind:c.kind,text:c.text,ev:c.ev,votes:c.votes,mine:c.mine})).concat(local);
+    save(); renderIdeas(); _lastSync=Date.now(); syncBadge();
+  }).catch(()=>{ _polling=false; syncBadge(true); });
+}
+function syncBadge(err){
+  const el=document.getElementById('talkSync'); if(!el) return;
+  if(!hasGAS){ el.textContent='미리보기: 이 기기에만 저장돼요'; return; }
+  el.innerHTML = err ? '⚠️ 연결이 잠깐 끊겼어요. 자동으로 다시 시도해요' : `🟢 모둠 실시간 공유 중 · ${new Date(_lastSync).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})} 업데이트`;
+}
+setInterval(()=>pollTalk(false),4000);
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) pollTalk(false); });
+
+/* ===================================================================
+   4. 교실 방음 설계 (가상 교실)
+   =================================================================== */
+const e10=v=>Math.pow(10,v/10), toDb=e=>10*Math.log10(e);
+function pathLevels(){ const lv={}; Object.keys(PATHS).forEach(k=>lv[k]=PATHS[k].base); S.installed.forEach(id=>{ const it=ITEMS.find(x=>x.id===id); if(!it)return; Object.keys(it.cut).forEach(k=>lv[k]-=it.cut[k]); }); Object.keys(lv).forEach(k=>lv[k]=Math.max(lv[k],25)); return lv; }
+function totalDb(lv){ return toDb(Object.values(lv).reduce((a,v)=>a+e10(v),0)); }
+const START_DB=totalDb(Object.fromEntries(Object.keys(PATHS).map(k=>[k,PATHS[k].base])));
+function usedBeans(){ return S.installed.reduce((a,id)=>a+(ITEMS.find(x=>x.id===id)||{cost:0}).cost,0); }
+function has(id){ return S.installed.includes(id); }
+function toggleItem(id){
+  const it=ITEMS.find(x=>x.id===id);
+  if(has(id)){ S.installed=S.installed.filter(x=>x!==id); save(); renderRoom(); toast(it.name+' 해제'); return; }
+  if(usedBeans()+it.cost>S.beans){ toast('소리콩이 모자라요! 퀴즈로 벌거나 싼 방법을 골라요'); return; }
+  S.installed.push(id); save(); renderRoom();
+  const lv=pathLevels(); const now=totalDb(lv); toast(`${it.em} ${it.name} 설치! 지금 ${now.toFixed(1)} dB`);
+}
+function slotOf(id){ const it=ITEMS.find(x=>x.id===id); return it?it.slot:''; }
+function renderScene(){
+  if(!(window.ART&&ART.room)) return renderSceneLegacy();
+  const lv=pathLevels(); const amp=k=>Math.max(0,(lv[k]-30)/40);
+  const now=totalDb(lv); const topK=Object.keys(lv).reduce((a,b)=>lv[a]>=lv[b]?a:b);
+  const inst=k=>S.installed.map(id=>ITEMS.find(x=>x.id===id)).filter(it=>it&&it.slot===k);
+  const icon=(it,x,y)=>{ const src=ART['i_'+it.id]; return `<g filter="url(#sh)"><circle cx="${x}" cy="${y}" r="15" fill="#fff" stroke="#ffd36b" stroke-width="2.5"/>${src?`<image href="${src}" x="${x-12}" y="${y-12}" width="24" height="24"/>`:`<text x="${x}" y="${y+6}" font-size="15" text-anchor="middle">${it.em}</text>`}</g>`; };
+  const badges=(k,x,y,dx)=>inst(k).map((it,i)=>icon(it,x+i*(dx||32),y)).join('');
+  const COL={hall:'#ff8a4c',win:'#3fb6ff',up:'#9b86ff',inside:'#ffb300'};
+  const wave=(k,x,y,ang)=>{ const a=amp(k); if(a<=0.05) return ''; let s=''; for(let i=1;i<=3;i++){ const r=12+i*14*a; const x0=(r*Math.cos(-0.95)).toFixed(1), y0=(r*Math.sin(-0.95)).toFixed(1), x1=(r*Math.cos(0.95)).toFixed(1), y1=(r*Math.sin(0.95)).toFixed(1); const d=`M ${x0} ${y0} A ${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${x1} ${y1}`; s+=`<path d="${d}" fill="none" stroke="#fff" stroke-width="${(7.5-i*1.4).toFixed(1)}" opacity="${(0.55-i*0.12).toFixed(2)}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${COL[k]}" stroke-width="${(4.6-i*0.9).toFixed(1)}" opacity="${(1-i*0.2).toFixed(2)}" stroke-linecap="round"/>`; } return `<g transform="translate(${x} ${y}) rotate(${ang})"><g class="wave-anim">${s}</g></g>`; };
+  const tag=(k,x,y,w,txt)=>{ const hot=k===topK; return `<g><rect x="${x}" y="${y}" width="${w}" height="26" rx="13" fill="rgba(10,13,34,.82)" stroke="${hot?'#ffd36b':'rgba(255,255,255,.45)'}" stroke-width="${hot?2.5:1.2}"/><text x="${x+w/2}" y="${y+18}" font-size="13" text-anchor="middle" font-family="Noto Sans KR" font-weight="700" fill="${hot?'#ffe08a':'#fff'}">${hot?'🔥 ':''}${txt} ${lv[k].toFixed(0)} dB</text></g>`; };
+  const sel=k=>curSlot===k?'sel':'';
+  const tint=Math.max(0,Math.min(0.24,(now-55)/14));
+  document.getElementById('scene').innerHTML=`<svg viewBox="0 0 640 400" aria-label="가상 교실">
+    <defs><filter id="sh" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity=".35"/></filter>
+      <linearGradient id="vig" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a0d22" stop-opacity=".25"/><stop offset=".25" stop-color="#0a0d22" stop-opacity="0"/><stop offset=".8" stop-color="#0a0d22" stop-opacity="0"/><stop offset="1" stop-color="#0a0d22" stop-opacity=".35"/></linearGradient></defs>
+    <image href="${ART.room}" x="0" y="0" width="640" height="360" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="640" height="360" fill="url(#vig)"/>
+    <rect x="0" y="0" width="640" height="360" fill="#ff3d5e" opacity="${tint.toFixed(2)}"/>
+    ${wave('up',320,4,90)}${wave('win',112,128,0)}${wave('hall',574,150,180)}${wave('inside',320,320,270)}
+    ${tag('up',10,8,128,'⬆️ 위층')}${tag('win',6,226,124,'🪟 창문')}${tag('hall',512,268,124,'🚪 복도')}${tag('inside',252,268,136,'🗣️ 교실 안')}
+    <g class="slot ${sel('win')}" onclick="pickSlot('win')"><rect class="hit" x="2" y="48" width="124" height="172" rx="12"/>${badges('win',22,198)}</g>
+    <g class="slot ${sel('wall')}" onclick="pickSlot('wall')"><rect class="hit" x="150" y="50" width="362" height="146" rx="12"/>${badges('wall',176,72)}</g>
+    <g class="slot ${sel('door')}" onclick="pickSlot('door')"><rect class="hit" x="522" y="48" width="116" height="214" rx="12"/>${badges('door',542,242)}</g>
+    <g class="slot ${sel('ceil')}" onclick="pickSlot('ceil')"><rect class="hit" x="4" y="2" width="632" height="44" rx="12"/>${badges('ceil',392,24)}</g>
+    <g class="slot ${sel('floor')}" onclick="pickSlot('floor')"><rect class="hit" x="4" y="298" width="632" height="58" rx="12"/>${badges('floor',30,334)}</g>
+    <g class="slot ${sel('habit')}" onclick="pickSlot('habit')"><rect class="hit" x="262" y="198" width="122" height="64" rx="12"/><rect x="273" y="232" width="100" height="24" rx="12" fill="rgba(10,13,34,.78)" stroke="rgba(255,255,255,.45)"/><text x="323" y="248.5" font-size="12" text-anchor="middle" font-family="Noto Sans KR" font-weight="700" fill="#fff">🤝 생활 약속</text>${badges('habit',290,212)}</g>
+    <rect x="0" y="360" width="640" height="40" fill="#0d1333"/>
+    ${SLOTS.map((s,i)=>`<g onclick="pickSlot('${s.k}')" class="slot"><rect x="${8+i*106}" y="368" width="98" height="24" rx="12" fill="${curSlot===s.k?'#ffd36b':'rgba(255,255,255,.08)'}" stroke="${curSlot===s.k?'#ffd36b':'rgba(255,255,255,.3)'}" stroke-width="1.2"/><text x="${57+i*106}" y="384" font-size="11" text-anchor="middle" font-family="Noto Sans KR" font-weight="700" fill="${curSlot===s.k?'#2a1606':'#e9ecff'}">${s.em} ${s.name}</text></g>`).join('')}
+  </svg>`;
+}
+function renderSceneLegacy(){
+  const lv=pathLevels(); const amp=k=>Math.max(0,(lv[k]-30)/40); // 0~1
+  const inst=k=>S.installed.map(id=>ITEMS.find(x=>x.id===id)).filter(it=>it&&it.slot===k);
+  const badges=(k,x,y)=>inst(k).map((it,i)=>`<g><circle cx="${x+i*30}" cy="${y}" r="14" fill="#fff" stroke="#23305B" stroke-width="2.5"/><text x="${x+i*30}" y="${y+6}" font-size="16" text-anchor="middle">${it.em}</text></g>`).join('');
+  const wave=(x,y,dir,a,color)=>{ if(a<=0.05) return ''; const n=3; let s=''; for(let i=1;i<=n;i++){ const r=10+i*12*a; s+=`<path d="M${x+dir*6} ${y-r} A ${r} ${r} 0 0 ${dir>0?1:0} ${x+dir*6} ${y+r}" fill="none" stroke="${color}" stroke-width="${3.5-i*0.6}" opacity="${0.9-i*0.22}" stroke-linecap="round"/>`; } return s; };
+  const sel=k=>curSlot===k?'sel':'';
+  document.getElementById('scene').innerHTML=`<svg viewBox="0 0 640 400" aria-label="가상 교실">
+    <defs><pattern id="brd" width="28" height="28" patternUnits="userSpaceOnUse"><rect width="28" height="28" fill="#F7F1E8"/><path d="M0 14h28M14 0v14M0 14v14" stroke="#EADFCF" stroke-width="1"/></pattern></defs>
+    <!-- 천장 / 위층 -->
+    <rect x="0" y="0" width="640" height="52" fill="#EDE9FF"/><text x="16" y="32" font-size="13" font-family="Noto Sans KR" font-weight="700" fill="#46527A">⬆️ 위층 교실 ${lv.up.toFixed(0)} dB</text>
+    ${wave(560,26,-1,amp('up'),'#B8A9FF')}
+    <rect x="0" y="52" width="640" height="14" fill="#DCD4FF" stroke="#23305B" stroke-width="2"/>
+    <!-- 뒷벽 -->
+    <rect x="0" y="66" width="640" height="230" fill="#FFF7EE"/>
+    <!-- 칠판 -->
+    <rect x="215" y="90" width="210" height="100" rx="6" fill="#4F8F6B" stroke="#23305B" stroke-width="3"/><text x="320" y="146" font-size="19" text-anchor="middle" font-family="Jua" fill="#fff">우리 교실을 지켜라!</text>
+    <!-- 창문 (왼쪽) -->
+    <rect x="30" y="86" width="140" height="120" rx="8" fill="#DDEEFF" stroke="#23305B" stroke-width="3"/><line x1="100" y1="86" x2="100" y2="206" stroke="#23305B" stroke-width="3"/><line x1="30" y1="146" x2="170" y2="146" stroke="#23305B" stroke-width="3"/>
+    <circle cx="60" cy="112" r="12" fill="#FFDD6B" stroke="#23305B" stroke-width="2"/><path d="M118 170 q10 -12 24 0 q10 -10 22 0" fill="none" stroke="#9BE3C9" stroke-width="3"/>
+    ${wave(24,146,1,amp('win'),'#8EC5FF')}
+    <!-- 문 (오른쪽) -->
+    <rect x="480" y="106" width="96" height="190" rx="6" fill="#D7A86E" stroke="#23305B" stroke-width="3"/><rect x="496" y="122" width="64" height="70" rx="4" fill="#F2E7D5" stroke="#23305B" stroke-width="2"/><circle cx="560" cy="212" r="5" fill="#23305B"/>
+    ${wave(600,200,-1,amp('hall'),'#FFB38A')}
+    <text x="596" y="110" font-size="12" font-family="Noto Sans KR" font-weight="700" fill="#46527A" transform="rotate(90 596 110)">복도 ${lv.hall.toFixed(0)} dB</text>
+    <!-- 바닥 -->
+    <rect x="0" y="296" width="640" height="104" fill="url(#brd)"/><line x1="0" y1="296" x2="640" y2="296" stroke="#23305B" stroke-width="3"/>
+    <!-- 책상 -->
+    ${[120,260,400].map(x=>`<g><rect x="${x}" y="300" width="90" height="36" rx="8" fill="#FFE1D3" stroke="#23305B" stroke-width="3"/><rect x="${x+8}" y="336" width="8" height="40" fill="#23305B"/><rect x="${x+74}" y="336" width="8" height="40" fill="#23305B"/><circle cx="${x+45}" cy="286" r="16" fill="#FFDD6B" stroke="#23305B" stroke-width="2.5"/><circle cx="${x+39}" cy="284" r="2" fill="#23305B"/><circle cx="${x+51}" cy="284" r="2" fill="#23305B"/></g>`).join('')}
+    ${wave(330,340,1,amp('inside')*0.7,'#FFC94A')}
+    <!-- 슬롯 핫스팟 -->
+    <g class="slot ${sel('win')}" onclick="pickSlot('win')"><rect class="hit" x="22" y="78" width="156" height="136" rx="12"/>${badges('win',50,96)}</g>
+    <g class="slot ${sel('wall')}" onclick="pickSlot('wall')"><rect class="hit" x="190" y="78" width="270" height="136" rx="12"/>${badges('wall',212,84)}</g>
+    <g class="slot ${sel('door')}" onclick="pickSlot('door')"><rect class="hit" x="472" y="98" width="112" height="206" rx="12"/>${badges('door',500,280)}</g>
+    <g class="slot ${sel('ceil')}" onclick="pickSlot('ceil')"><rect class="hit" x="6" y="4" width="628" height="60" rx="12"/>${badges('ceil',400,26)}</g>
+    <g class="slot ${sel('floor')}" onclick="pickSlot('floor')"><rect class="hit" x="6" y="300" width="628" height="94" rx="12"/>${badges('floor',40,380)}</g>
+    <g class="slot ${sel('habit')}" onclick="pickSlot('habit')"><rect class="hit" x="190" y="222" width="270" height="68" rx="12"/><text x="325" y="262" font-size="13" text-anchor="middle" font-family="Noto Sans KR" font-weight="700" fill="#46527A">🤝 생활 약속</text>${badges('habit',236,246)}</g>
+    <!-- 슬롯 이름표 -->
+    ${SLOTS.map((s,i)=>`<g onclick="pickSlot('${s.k}')" class="slot"><rect x="${8+i*106}" y="372" width="98" height="22" rx="11" fill="${curSlot===s.k?'#23305B':'#fff'}" stroke="#23305B" stroke-width="2"/><text x="${57+i*106}" y="387" font-size="11" text-anchor="middle" font-family="Noto Sans KR" font-weight="700" fill="${curSlot===s.k?'#fff':'#23305B'}">${s.em} ${s.name}</text></g>`).join('')}
+  </svg>`;
+}
+function pickSlot(k){ curSlot=k; renderRoom(); }
+function renderRoom(){
+  const lv=pathLevels(); const now=totalDb(lv); const cut=START_DB-now;
+  document.getElementById('dbNow').textContent=now.toFixed(1)+' dB'; document.getElementById('dbNow').className='big '+(now<=55?'ok':(now>62?'hot':'')); document.getElementById('dbStart').textContent=START_DB.toFixed(0);
+  document.getElementById('dbCut').textContent='▼ '+cut.toFixed(1)+' dB';
+  document.getElementById('gaugePin').style.left=Math.min(100,Math.max(0,(now-30)/40*100))+'%';
+  const face= now<=45?['#9BE3C9','😊 아주 조용해요']:(now<=55?['#FFDD6B','🙂 기준 통과!']:(now<=62?['#FFB38A','😐 아직 시끄러워요']:['#FF9E9E','😫 집중이 안 돼요']));
+  document.getElementById('meterFace').innerHTML=`<div style="text-align:center">${mascotSVG(56,face[0])}<div class="hint" style="font-weight:700">${face[1]}</div></div>`;
+  const topK=Object.keys(lv).reduce((a,b)=>lv[a]>=lv[b]?a:b); document.getElementById('paths').innerHTML=Object.keys(PATHS).map(k=>`<div class="path ${k===topK?'top-path':''}"><span>${k===topK?'🔥 ':''}${PATHS[k].em} ${PATHS[k].name}</span><div class="bar"><i class="${lv[k]<=50?'ok':''}" style="width:${Math.min(100,Math.max(0,(lv[k]-30)/40*100))}%;background:${PATHS[k].c}"></i></div><span style="text-align:right">${lv[k].toFixed(0)} dB</span></div>`).join('')+`<div class="hint">전체 소음은 네 길의 소리를 더한 값(에너지 합). <b>가장 시끄러운 길</b>을 줄여야 전체가 크게 줄어요.</div>`;
+  document.getElementById('goals').innerHTML=GOALS.map(g=>`<div class="goal ${now<=g.db?'hit':''}">${g.em}<b>${g.db} dB</b>${g.t}${now<=g.db?' ✓':''}</div>`).join('');
+  const used=usedBeans(); document.getElementById('beanHave').textContent=S.beans; document.getElementById('beanUsed').textContent=used; document.getElementById('beanLeft').textContent=S.beans-used; document.getElementById('beanCount').textContent=S.beans;
+  document.getElementById('slotTabs').innerHTML=SLOTS.map(s=>`<button class="${curSlot===s.k?'on':''}" onclick="pickSlot('${s.k}')">${s.em} ${s.name}</button>`).join('');
+  const sl=SLOTS.find(s=>s.k===curSlot); document.getElementById('slotTitle').textContent=`${sl.em} ${sl.name}에 설치하기`;
+  document.getElementById('itemList').innerHTML=ITEMS.filter(it=>it.slot===curSlot).map(it=>{ const on=has(it.id); const cant=!on&&used+it.cost>S.beans; const mc=it.mini?miniCut(it.mini):null;
+    const cuts=Object.keys(it.cut).map(k=>`${PATHS[k].em} ▼${it.cut[k]}`).join(' ');
+    const spr=(window.ART||{})['i_'+it.id]; return `<div class="item ${on?'on':''} ${cant?'cant':''}"><div class="em">${spr?`<img src="${spr}" alt="">`:it.em}</div><div><b>${it.name}</b><div class="d">${it.d}</div><div class="tags"><span>${it.p}</span><span>${cuts} dB</span>${mc!=null?`<span class="ours">우리 반 측정 ▼${mc} dB</span>`:''}</div></div><div><div class="pr">🫘${it.cost===0?'공짜':it.cost}</div><button class="btn sm ${on?'':'lav'}" onclick="toggleItem('${it.id}')">${on?'해제':'설치'}</button></div></div>`; }).join('');
+  document.getElementById('designReason').value=S.designReason||''; document.getElementById('designReason').oninput=e=>{S.designReason=e.target.value;save();};
+  renderScene(); save();
+}
+function resetRoom(){ if(!confirm('설치한 것을 모두 해제할까요?')) return; S.installed=[]; save(); renderRoom(); }
+function designSummary(){ const lv=pathLevels(); const now=totalDb(lv); return {items:S.installed.map(id=>ITEMS.find(x=>x.id===id)).filter(Boolean), cost:usedBeans(), before:+START_DB.toFixed(1), after:+now.toFixed(1), reduced:+(START_DB-now).toFixed(1), goal: now<=35?'WHO 35':(now<=50?'50':(now<=55?'기준 55':'미달'))}; }
+function saveDesignNow(){ if(!S.group){toast('모둠을 먼저 골라요');go('home');return;} S.designReason=document.getElementById('designReason').value; save(); const d=designSummary();
+  srv('saveDesign',{group:GK(),lesson:S.lesson,nick:S.nick,items:d.items.map(i=>i.name).join(', '),cost:d.cost,before:d.before,after:d.after,reduced:d.reduced,goal:d.goal,reason:S.designReason}).then(()=>toast('설계를 저장했어요 ☁️')).catch(()=>toast('저장 실패 (기기에는 남아 있어요)')); }
+let quizOpen=false;
+function toggleQuiz(){ quizOpen=!quizOpen; const b=document.getElementById('quizBox'); b.style.display=quizOpen?'block':'none'; if(quizOpen) renderQuiz(); }
+function renderQuiz(){ document.getElementById('quizBox').innerHTML = `<div class="hint" style="margin-bottom:8px">문제 하나 맞히면 🫘2개! (한 번만)</div>`+QUIZ.map((q,i)=>`<div class="quiz"><b>Q${i+1}. ${q.q}</b>${S.quizDone.includes(i)?'<span class="tag" style="margin-left:6px">완료 ✓</span>':''}<div class="opts">${q.o.map((o,j)=>`<button class="opt" onclick="answer(${i},${j},this)" ${S.quizDone.includes(i)?'disabled':''}>${o}</button>`).join('')}</div><div class="hint" id="why${i}"></div></div>`).join(''); }
+function answer(i,j,el){ const q=QUIZ[i]; const ok=j===q.a; el.classList.add(ok?'ok':'no'); document.getElementById('why'+i).textContent=(ok?'정답! ':'아쉬워요. ')+q.why; if(ok&&!S.quizDone.includes(i)){ S.quizDone.push(i); S.beans+=2; save(); toast('🫘 소리콩 2개 획득!'); setTimeout(()=>{renderQuiz();renderRoom();},900); } }
+
+/* ===================================================================
+   5. AI 파트너
+   =================================================================== */
+const CARD_TITLES={'카드1':'카드 ① AI에게 탐구 질문 점검받기','카드2':'카드 ② AI에게 자료 물어보기','카드3':'카드 ③ 설계 상담','카드4':'카드 ④ AI에게 설계 비판 요청하기','자유':'자유 질문'};
+const CARD_TITLES_R={'카드1':'카드 ① 탐구 질문 점검하기','카드2':'카드 ② 자료에서 찾아보기','카드3':'카드 ③ 설계 상담(모둠이 직접)','카드4':'카드 ④ 설계의 한계 찾기','자유':'자유 조사'};
+function pickCard(c){
+  S.card=c; document.querySelectorAll('.cardbtn').forEach(b=>b.classList.toggle('on',b.dataset.c===c));
+  document.getElementById('cardTitle').textContent=(noAI()?CARD_TITLES_R:CARD_TITLES)[c]; const d=designSummary(); const rank=S.pathRank.length?S.pathRank.map(k=>PATHS[k].name).join(' > '):'(아직 안 정함)';
+  const T={
+   '카드1':`우리는 복도 소음에서 교실을 지키는 방음 설계를 하려고 해. 우리 모둠의 탐구 질문은 '(      )'야. 무엇을 바꾸고 무엇을 볼지(dB) 분명한지 점검해 줘. 답을 대신 써 주지 말고, 고칠 점을 질문 2개로만 알려 줘.`,
+   '카드2':`우리는 교실에 방음 장치를 설계하려고 해. 우리 모둠이 궁금한 것은 '(      )'야.\n1. 계란판·스펀지·우드락·책장·이중창은 소리를 어떻게 막거나 흡수해? 흡음과 차음은 뭐가 달라?\n2. 문틈 같은 틈새가 있으면 왜 소리가 많이 새?\n3. 답을 정해 주지 말고, 우리가 앱에서 설계하며 확인할 수 있는 질문 2개를 알려 줘.`,
+   '카드3':`우리 모둠 교실 방음 설계를 상담해 줘. 소리가 들어오는 길 순위는 '${rank}'라고 생각해. 지금까지 설치한 것은 '${d.items.map(i=>i.name).join(', ')||'(없음)'}'이고 ${d.before} dB에서 ${d.after} dB이 됐어. 소리콩(돈)은 ${S.beans-d.cost}개 남았어. 무엇을 먼저 바꾸면 좋을지 답 대신 되묻는 질문으로 도와줘.`,
+   '카드4':`우리 모둠 교실 방음 설계를 검토해 줘. 설치한 것은 '${d.items.map(i=>i.name).join(', ')||'(      )'}'이고, 앱에서는 ${d.before} dB에서 ${d.after} dB로 ${d.reduced} dB 줄었어. 실제 교실에서는 생각과 다를 수 있는 이유를 3가지만, 초등학생이 알아듣게 짧게 말해 줘.`,
+   '자유':`소리는 어떻게 전달돼? 방음벽은 왜 소리를 줄여 줘?`};
+  const R={
+   '카드1':`우리 모둠의 탐구 질문은 '(      )'야.\n무엇을 바꾸고(재료·장치) 무엇을 볼지(dB)가 분명한지 모둠에서 서로 점검해 보자. 고칠 점을 질문 2개로 적어 보자.`,
+   '카드2':`조사 질문 (소리 백과·교과서에서 찾아 적기)\n1. 계란판·스펀지·우드락·책장·이중창은 소리를 어떻게 막거나 흡수할까? 흡음과 차음은 무엇이 다를까?\n2. 문틈 같은 틈새가 있으면 왜 소리가 많이 샐까?\n3. 찾은 것 중 우리가 앱 설계에서 확인해 볼 수 있는 것 2개를 골라 보자.`,
+   '카드3':`우리 모둠 설계 상담 (모둠이 직접)\n소리가 들어오는 길 순위: '${rank}'. 지금까지 설치한 것: '${d.items.map(i=>i.name).join(', ')||'(없음)'}', ${d.before} dB → ${d.after} dB, 남은 소리콩 ${S.beans-d.cost}개.\n소리 백과의 장치 표(어느 길을 몇 dB 줄이나, 콩 몇 개인가)를 보고 무엇을 먼저 바꿀지 정해 보자.`,
+   '카드4':`우리 모둠 설계 검토 (모둠이 직접)\n설치한 것: '${d.items.map(i=>i.name).join(', ')||'(      )'}', ${d.before} dB → ${d.after} dB (▼${d.reduced} dB).\n실제 교실에서는 앱과 다를 수 있는 이유 3가지를 미니 실험 결과와 소리 백과에서 찾아 적어 보자. (예: 틈새, 재료 두께, 측정 오차)`,
+   '자유':`소리는 어떻게 전달될까? 방음벽은 왜 소리를 줄여 줄까? 소리 백과와 교과서에서 찾아보자.`};
+  document.getElementById('prompt').value=(noAI()?R:T)[c]; renderChat();
+}
+/* 비교반(AI 없음) 모드: 화면 문구·버튼 전환 */
+function applyMode(){
+  const off=noAI();
+  const nav=document.querySelector('.nav-btn[data-page="ai"]'); if(nav) nav.innerHTML=off?'<span class="ic" style="background:var(--lav)">📚</span><span>자료 조사<small>소리 백과·교과서</small></span>':'<span class="ic" style="background:var(--lav)">🤖</span><span>AI 파트너<small>프롬프트 카드</small></span>';
+  const t=document.getElementById('aiTitle'); if(t) t.textContent=off?'📚 자료 조사: 조사 카드로 찾아봐요':'🤖 AI 파트너: 프롬프트 카드로 물어봐요';
+  const m=document.getElementById('aiModeText'); if(m) m.innerHTML=off?'카드를 고르면 조사 질문이 채워져요. <b>소리 백과·교과서·미니 실험 결과</b>에서 답을 찾고, <b>알게 된 것</b>을 내 말로 저장해요.':'카드를 고르면 질문이 채워져요. ( ) 안을 우리 말로 바꾸고 <b>소리콩 AI에게 바로 물어봐요.</b> 물어본 뒤에는 <b>알게 된 것</b>을 내 말로 저장해요.';
+  const tip=document.getElementById('aiTip'); if(tip) tip.innerHTML=off?'<b>🔍 근거를 달아 확인하기</b><br>찾은 내용 옆에 "어디에서 봤는지"를 꼭 적어요. 우리 실험 결과와 다르면 왜 다른지 모둠에서 이야기해요.':'<b>🔍 의심하고 확인하기</b><br>AI가 답을 대신 써 주면 "답 말고 질문으로만 알려 줘"라고 다시 말해요. AI의 말 중 우리 실험에 맞는 것만 골라요.';
+  ['aiBtnRow','chatBox','aiFollowRow'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display=off?'none':''; });
+  const rp=document.getElementById('researchPanel'); if(rp) rp.style.display=off?'block':'none';
+  const ll=document.getElementById('learnedLabel'); if(ll) ll.textContent=off?'💡 자료를 찾아보고 알게 된 것':'💡 AI에게 물어보고 알게 된 것';
+  const lh=document.getElementById('learnedHint'); if(lh) lh.innerHTML=off?'자료를 그대로 베끼지 말고 <b>내 말로 한두 문장</b>!':'AI 답을 그대로 베끼지 말고 <b>내 말로 한두 문장</b>!';
+  const pa=document.getElementById('pA'); if(pa) pa.placeholder=off?'자료·실험 결과에서 찾은, 우리 설계가 실제와 다를 수 있는 이유 1가지':'AI가 말한 것 중 우리 설계에 맞는 지적 1가지';
+  const pl=document.getElementById('pALabel'); if(pl) pl.textContent=off?'📚 우리가 찾은 설계의 한계':'🤖 AI가 지적한 한계';
+  const ps=document.getElementById('presentSub'); if(ps) ps.textContent=off?'소리가 들어오는 길 → 설치한 것과 순서 → 줄인 dB → 우리가 찾은 한계. 듣는 모둠은 질문 1개!':'소리가 들어오는 길 → 설치한 것과 순서 → 줄인 dB → AI가 지적한 한계. 듣는 모둠은 질문 1개!';
+  const jn=document.querySelector('.nav-btn[data-page="journal"] small'); if(jn) jn.textContent=off?'돌아보기':'돌아보기·AI 대화 기록';
+  if(off) setAIChip(false);
+}
+function renderChat(){ const b=document.getElementById('chatBox'); const list=S.chat.filter(m=>!S.card||m.card===S.card||S.card==='자유'&&!m.card);
+  b.innerHTML=list.length?list.map(m=>`<div class="msg ${m.role==='model'?'ai':'me'}"><span class="r">${m.role==='model'?((window.ART&&ART.m_think)?`<img class="av" src="${ART.m_think}" alt="">소리콩 AI`:'🤖 AI'):'🙋 '+(m.nick||'나')}</span>${esc(m.text)}</div>`).join(''):'<div class="hint" style="margin:auto">이 카드의 대화가 여기에 쌓여요.</div>'; b.scrollTop=b.scrollHeight; }
+function logChat(card,role,text){ S.chat.push({card,role,text,nick:S.nick,t:Date.now(),lesson:S.lesson}); save(); renderChat(); if(S.group) srv('saveChat',GK(),S.lesson,card,role==='model'?'AI':S.nick||'학생',text).catch(()=>{}); }
+async function askNow(){ const p=document.getElementById('prompt').value.trim(); if(!p)return; if(!S.card)pickCard('자유'); await sendToAI(p); }
+async function askFollow(){ const p=document.getElementById('followup').value.trim(); if(!p)return; document.getElementById('followup').value=''; await sendToAI(p); }
+async function sendToAI(p){
+  if(!S.group||!S.nick){ toast('시작 화면에서 모둠과 반·번호를 먼저!'); go('home'); return; }
+  if(noAI()){ toast('우리 반은 소리 백과·교과서에서 직접 찾아요 📚'); return; }
+  logChat(S.card,'user',p);
+  const btn=document.getElementById('askBtn'); btn.disabled=true; const tmp={card:S.card,role:'model',text:'⏳ 소리콩이 생각 중…'}; S.chat.push(tmp); renderChat();
+  try{ const r=await srv('askGemini',S.card,S.chat.filter(m=>m.card===S.card&&m!==tmp&&!m.sys&&!/^\((앱 안 AI는 꺼져|AI 오류|연결 오류)/.test(m.text||'')).map(m=>({role:m.role,text:m.text})),{group:GK(),nick:S.nick,lesson:S.lesson});
+    S.chat.splice(S.chat.indexOf(tmp),1);
+    const ERR={NO_KEY:'선생님, 스크립트 속성에 Gemini 키(AIza…)가 아직 안 보여요.',RATE_LIMIT:'질문이 한꺼번에 몰렸어요. 10초 뒤 다시 보내 주세요.',BLOCKED:'이 질문에는 답할 수 없대요. 다르게 물어봐요.',MODEL_NOT_FOUND:'AI 모델 이름을 찾지 못했어요(선생님 확인).',NO_AI_CLASS:'우리 반은 자료 조사로 진행해요.',KEY_ERROR_400:'AI 키가 올바르지 않아요(선생님 확인).',KEY_ERROR_403:'AI 키 권한이 없어요(선생님 확인).'};
+    if(r.ok){ hasKey=true; logChat(S.card,'model',r.text); setAIChip(true); }
+    else { S.chat.push({card:S.card,role:'model',text:'(AI 오류) '+(ERR[r.error]||r.error)+' 잠시 뒤 다시 해 보세요.',nick:'',t:Date.now(),lesson:S.lesson,sys:true}); save(); renderChat(); }
+  }catch(e){ S.chat.splice(S.chat.indexOf(tmp),1); logChat(S.card,'model','(연결 오류) '+e); }
+  btn.disabled=false;
+}
+function setAIChip(on){ const ch=document.getElementById('chipAI'); if(ch) ch.textContent=noAI()?'📚 자료 조사 모드':(on?'🤖 소리콩 AI 켜짐':'🤖 AI 확인 중'); const b=document.getElementById('askBtn'); if(b) b.textContent='💬 소리콩 AI에게 물어보기'; }
+function saveLearnedNow(){ const t=document.getElementById('learned').value.trim(); if(!t){toast('알게 된 것을 한두 문장 적어요');return;}
+  if(!S.group||!S.nick){ toast('시작 화면에서 모둠과 반·번호를 먼저!'); go('home'); return; }
+  const lastQ=noAI()?('[자료 조사] 출처: '+(document.getElementById('srcSel')?.value||'')):((S.chat.filter(m=>m.card===S.card&&m.role==='user').slice(-1)[0]||{}).text||'');
+  S.learned=(S.learned||[]).concat([{card:S.card,text:t,lesson:S.lesson,t:Date.now()}]); save();
+  srv('saveLearned',{group:GK(),nick:S.nick,lesson:S.lesson,card:(noAI()?'조사':'')+(S.card||'자유'),learned:t,question:lastQ}).then(()=>{toast('알게 된 것을 저장했어요 ☁️'); document.getElementById('learned').value=''; renderLearnedCount();}).catch(()=>toast('저장 실패 (기기에는 남아 있어요)')); }
+function renderLearnedCount(){ const el=document.getElementById('learnedCount'); if(el){ const n=(S.learned||[]).filter(x=>x.lesson===S.lesson).length; el.textContent=n?`이번 차시에 ${n}개 저장했어요 ✨`:''; } }
+function copyChatAll(){ if(!S.chat.length){toast('아직 대화가 없어요');return;} const t=S.chat.map(m=>(m.role==='model'?'AI: ':'나: ')+m.text).join('\n'); copyText(t,'대화 전체를 복사했어요! 탐구 일지에 붙여넣어요'); }
+
+/* ===================================================================
+   5.5 탐구 일지 (성찰저널 + AI 대화 기록)
+   =================================================================== */
+const J_ITEMS=[
+  {k:'pre', t:'시작 전 나의 생각', kind:'thought', item:'시작 전'},
+  {k:'r1', t:'1차시 탐구 돌아보기', kind:'reflect', item:'1차시', lesson:'1'},
+  {k:'c1', t:'1차시 AI 대화 기록', kind:'chat', lesson:'1'},
+  {k:'r2', t:'2차시 탐구 돌아보기', kind:'reflect', item:'2차시', lesson:'2'},
+  {k:'c2', t:'2차시 AI 대화 기록', kind:'chat', lesson:'2'},
+  {k:'r3', t:'3차시 탐구 돌아보기', kind:'reflect', item:'3차시', lesson:'3'},
+  {k:'c3', t:'3차시 AI 대화 기록', kind:'chat', lesson:'3'},
+  {k:'r4', t:'4차시 탐구 돌아보기', kind:'reflect', item:'4차시', lesson:'4'},
+  {k:'c4', t:'4차시 AI 대화 기록', kind:'chat', lesson:'4'},
+  {k:'post', t:'탐구 후 나의 생각', kind:'thought', item:'탐구 후'}];
+const MOODS=['즐거움','뿌듯함','신기함','궁금함','그저 그럼','헷갈림','답답함','불안','지루함'];
+let jKey='', jCur=0;
+function jData(k){ S.journal=S.journal||{}; return S.journal[k]=S.journal[k]||{}; }
+function jLocked(it){ return it.k==='post' && !(S.journal&&S.journal.r4&&S.journal.r4.done); }
+function renderJournal(){
+  S.journal=S.journal||{};
+  const ITEMS=noAI()?J_ITEMS.filter(i=>i.kind!=='chat'):J_ITEMS;
+  const done=ITEMS.filter(i=>S.journal[i.k]&&S.journal[i.k].done).length;
+  document.getElementById('jDone').textContent=done; document.getElementById('jTotal').textContent=ITEMS.length; document.getElementById('jBar').style.width=Math.round(done*100/ITEMS.length)+'%';
+  document.getElementById('jWho').textContent=S.group?`${S.group}모둠 · ${S.nick||'반·번호 없음'}`:'모둠과 반·번호를 먼저 적어요';
+  document.getElementById('jList').innerHTML=ITEMS.map((it,i)=>{ const d=S.journal[it.k]||{}; const lock=jLocked(it); const cur=it.lesson&&it.lesson===S.lesson;
+    return `<div class="jrow ${d.done?'done':''} ${lock?'lock':''}"><div class="n">${lock?'🔒':(d.done?'✓':String(i+1).padStart(2,'0'))}</div><div><b>${it.t} ${cur?'<span class="tag" style="background:var(--butter);font-size:11px">오늘</span>':''}</b><span class="hint">${lock?'4차시 돌아보기를 쓰면 열려요':(d.done?'제출 완료 · 다시 열어 고칠 수 있어요':(d.touched?'쓰는 중…':'나의 생각을 남겨요'))}</span></div><button class="btn sm ${d.done?'':'pink'}" ${lock?'disabled':''} onclick="jOpen('${it.k}')">${d.done?'다시 보기':'기록하기'} →</button></div>`; }).join('');
+}
+function jShow(id){ ['journalHome','journalForm','thoughtForm','chatLogForm'].forEach(x=>document.getElementById(x).style.display=x===id?'block':'none'); window.scrollTo({top:0,behavior:'smooth'}); }
+function jBack(){ jShow('journalHome'); renderJournal(); }
+function jOpen(k){
+  if(!S.group||!S.nick){ toast('시작 화면에서 모둠과 반·번호를 먼저!'); go('home'); return; }
+  const it=J_ITEMS.find(x=>x.k===k); if(jLocked(it)) return; jKey=k; const d=jData(k);
+  if(it.kind==='thought'){ document.getElementById('tfTag').textContent=it.item; document.getElementById('tfTitle').textContent=it.t;
+    document.getElementById('tfSub').textContent= k==='pre'?'정답은 없어요. 지금 생각을 솔직하게 적어요. 탐구가 끝나면 다시 적고 비교해 볼 거예요.':'4차시까지 해 보고 난 지금의 생각을 적어요. 시작 전 생각과 무엇이 달라졌나요?';
+    ['t1','t2','t3'].forEach(x=>{ const el=document.getElementById(x); el.value=d[x]||''; el.oninput=()=>{d[x]=el.value;d.touched=true;save();}; });
+    if(k==='post'&&S.journal.pre){ const p=S.journal.pre; ['t1','t2','t3'].forEach(x=>{ if(p[x]) document.getElementById(x).placeholder='시작 전에는: '+p[x]; }); }
+    jShow('thoughtForm'); return; }
+  if(it.kind==='chat'){ document.getElementById('clTag').textContent=it.lesson+'차시'; document.getElementById('clText').value=d.text||''; document.getElementById('clNote').value=d.note||'';
+    document.getElementById('clNote').oninput=e=>{d.note=e.target.value;d.touched=true;save();}; clPreview(); jShow('chatLogForm'); return; }
+  // reflect
+  document.getElementById('jfTag').textContent=it.item; document.getElementById('jfTitle').textContent='오늘의 탐구를 돌아봐요';
+  
+  const bind=(id,f)=>{ const el=document.getElementById(id); el.value=d[f]||''; el.oninput=()=>{d[f]=el.value;d.touched=true;save();}; };
+  bind('jq','q'); bind('jlearned','learned'); bind('jdoubt','doubtText'); bind('jhard','hard'); bind('jnext','next'); bind('jmoodFree','moodFree');
+  const dp=document.getElementById('jDoubtPills'); [...dp.children].forEach(b=>{ b.classList.toggle('on',d.doubted===b.dataset.v); b.onclick=()=>{d.doubted=b.dataset.v;d.touched=true;save();[...dp.children].forEach(x=>x.classList.toggle('on',x===b));}; });
+  const sp=document.getElementById('jScorePills'); sp.innerHTML=''; for(let i=1;i<=5;i++){ const b=document.createElement('button'); b.className='pill'+(d.score==i?' on':''); b.textContent=i; b.style.minWidth='52px'; b.onclick=()=>{d.score=i;d.touched=true;save();[...sp.children].forEach(x=>x.classList.toggle('on',x===b));}; sp.appendChild(b); }
+  const mp=document.getElementById('jMoodPills'); mp.innerHTML=''; MOODS.forEach(m=>{ const b=document.createElement('button'); b.className='pill'+(d.mood===m?' on':''); b.textContent=m; b.onclick=()=>{d.mood=m;d.touched=true;save();[...mp.children].forEach(x=>x.classList.toggle('on',x===b));}; mp.appendChild(b); });
+  jStep(0); jShow('journalForm');
+}
+function jStep(n){
+  if(n<0) return; if(n>2){ submitReflect(); return; }
+  jCur=n; [0,1,2].forEach(i=>document.getElementById('jStep'+i).style.display=i===n?'block':'none');
+  [...document.getElementById('jTabs').children].forEach((b,i)=>b.classList.toggle('on',i===n));
+  document.getElementById('jPrev').style.visibility=n===0?'hidden':'visible';
+  document.getElementById('jNext').textContent=n===2?'오늘의 기록 제출하기 →':'다음으로 →';
+}
+function submitReflect(){
+  const it=J_ITEMS.find(x=>x.k===jKey); const d=jData(jKey);
+  if(!d.q&&!d.learned){ toast('오늘의 발견을 한 줄이라도 적어요'); jStep(0); return; }
+  if(!d.doubted){ toast('의심하거나 확인한 적이 있었는지 골라요'); jStep(1); return; }
+  if(!d.score){ toast('오늘의 도전 점수를 골라요'); jStep(2); return; }
+  d.done=true; save();
+  srv('saveJournal',{group:GK(),nick:S.nick,item:it.item,q:d.q||'',learned:d.learned||'',doubted:d.doubted||'',doubtText:d.doubtText||'',hard:d.hard||'',score:d.score||'',mood:(d.mood||'')+(d.moodFree?' / '+d.moodFree:''),next:d.next||''})
+    .then(()=>toast('오늘의 기록을 제출했어요 ☁️')).catch(()=>toast('제출 실패 (기기에는 남아 있어요)'));
+  jBack();
+}
+function submitThought(){
+  const it=J_ITEMS.find(x=>x.k===jKey); const d=jData(jKey);
+  if(!d.t1&&!d.t2&&!d.t3){ toast('한 줄이라도 적어 주세요'); return; }
+  d.done=true; save();
+  srv('saveJournal',{group:GK(),nick:S.nick,item:it.item,q:d.t3||'',learned:d.t1||'',doubted:'',doubtText:d.t2||'',hard:'',score:'',mood:'',next:''})
+    .then(()=>toast('기록을 제출했어요 ☁️')).catch(()=>toast('제출 실패 (기기에는 남아 있어요)'));
+  jBack();
+}
+/* AI 대화 기록: 붙여넣은 글을 나/AI 발화로 나눔 */
+function parseChat(text){
+  const lines=String(text||'').split(/\r?\n/); const out=[]; const d=jData(jKey); d.roleFix=d.roleFix||{};
+  const isMe=/^\s*(나|학생|질문|사용자|user|you|me|q)\s*[:：>\-]/i, isAI=/^\s*(ai|gemini|제미나이|노트북|notebooklm|assistant|답|답변|소리콩|챗봇|gpt|a)\s*[:：>\-]/i;
+  lines.forEach(l=>{ if(!l.trim()) return; let role=null, body=l;
+    if(isMe.test(l)){ role='me'; body=l.replace(isMe,''); } else if(isAI.test(l)){ role='ai'; body=l.replace(isAI,''); }
+    if(role){ out.push({role,text:body.trim()}); } else if(out.length){ out[out.length-1].text+='\n'+l.trim(); } else { out.push({role:'me',text:l.trim()}); } });
+  out.forEach((m,i)=>{ if(d.roleFix[i]) m.role=d.roleFix[i]; });
+  return out;
+}
+function clPreview(){
+  const d=jData(jKey); d.text=document.getElementById('clText').value; d.touched=true; save();
+  const msgs=parseChat(d.text); document.getElementById('clCount').textContent=msgs.length+'개 발화';
+  const priv=/01[016789][-\s.]?\d{3,4}[-\s.]?\d{4}|\d{2,3}[-\s.]\d{3,4}[-\s.]\d{4}|@|선생님\s*이름|[가-힣]{2,3}\s*(학생|어린이|님)\b/.test(d.text);
+  const pv=document.getElementById('clPrivacy'); pv.innerHTML=priv?'⚠️ <b>전화번호나 이름처럼 보이는 글자</b>가 있어요. 지워 주세요.':'이름이나 전화번호가 들어 있지 않은지 살펴봐요.'; pv.style.color=priv?'var(--red)':'';
+  d.privacy=priv?'확인 필요':'없음';
+  const box=document.getElementById('clPreviewBox');
+  box.innerHTML=msgs.length?msgs.map((m,i)=>`<div class="msg ${m.role==='ai'?'ai':'me'}"><span class="r click" title="누르면 바꿔요" onclick="clFlip(${i})">${m.role==='ai'?'🤖 AI':'🙋 나'} ⇄</span>${esc(m.text)}</div>`).join(''):'<div class="hint" style="margin:auto">대화를 붙여 넣어 주세요</div>';
+}
+function clFlip(i){ const d=jData(jKey); const msgs=parseChat(d.text); d.roleFix[i]=msgs[i].role==='ai'?'me':'ai'; save(); clPreview(); }
+function clFromApp(){ const it=J_ITEMS.find(x=>x.k===jKey); const list=S.chat.filter(m=>!m.lesson||m.lesson===it.lesson); if(!list.length){ toast('앱 안 AI 대화가 아직 없어요'); return; }
+  document.getElementById('clText').value=list.map(m=>(m.role==='model'?'AI: ':'나: ')+m.text).join('\n'); clPreview(); toast('앱 안 대화를 가져왔어요'); }
+function submitChatLog(){
+  const it=J_ITEMS.find(x=>x.k===jKey); const d=jData(jKey); const msgs=parseChat(d.text);
+  if(!msgs.length){ toast('대화를 먼저 붙여 넣어요'); return; }
+  if(d.privacy==='확인 필요' && !confirm('전화번호나 이름처럼 보이는 글자가 있어요. 그대로 제출할까요?')) return;
+  const text=msgs.map(m=>(m.role==='ai'?'AI: ':'나: ')+m.text).join('\n');
+  d.done=true; d.turns=msgs.length; save();
+  srv('saveChatLog',{group:GK(),nick:S.nick,lesson:it.lesson,turns:msgs.length,privacy:d.privacy||'없음',note:d.note||'',text})
+    .then(()=>toast('AI 대화 기록을 제출했어요 ☁️')).catch(()=>toast('제출 실패 (기기에는 남아 있어요)'));
+  jBack();
+}
+
+
+/* ===================================================================
+   6. 설계 발표
+   =================================================================== */
+function buildPresent(){ const d=designSummary(); document.getElementById('pQ').value=S.pathRank.length?`우리 교실에서 가장 시끄러운 길은 ${S.pathRank.map((k,i)=>(i+1)+'위 '+PATHS[k].name).join(', ')}.`:'';
+  document.getElementById('pItems').innerHTML=d.items.length?d.items.map((it,i)=>`<span class="tag" style="margin:2px">${i+1}. ${it.em} ${it.name} <span class="hint">${it.p} · 🫘${it.cost}</span></span>`).join('')+`<div class="hint" style="margin-top:6px">쓴 소리콩 ${d.cost}개 · 이유: ${esc(S.designReason||'')}</div>`:'<span class="hint">아직 설치한 것이 없어요</span>';
+  document.getElementById('pResult').innerHTML=`교실 소음 <span class="blank">${d.before}</span> dB → <span class="blank">${d.after}</span> dB, <span class="blank">▼${d.reduced}</span> dB 줄였다. ${d.after<=55?'📏 학교보건법 기준 통과!':'아직 기준(55 dB) 위'} ${S.present.mini?`<div class="hint" style="font-family:'Noto Sans KR';font-size:13px;margin-top:4px">1차시 미니 실험: ${esc(S.present.mini)}</div>`:''}`;
+  const ai=S.chat.filter(m=>m.card==='카드4'&&m.role==='model').slice(-1)[0]; document.getElementById('pA').value=ai?ai.text.slice(0,300):''; toast('설계도를 채웠어요. 고쳐 써도 돼요!'); }
+function savePresentNow(){ if(!S.group){toast('모둠을 먼저 골라요');go('home');return;} const d=designSummary(); const o={group:GK(),question:document.getElementById('pQ').value,result:`${d.before}→${d.after} dB (▼${d.reduced}) / ${d.items.map(i=>i.name).join(', ')}`,conclusion:S.designReason||'',critique:document.getElementById('pA').value,but:document.getElementById('pBut').textContent}; srv('saveResultCard',o).then(()=>toast('발표 카드를 저장했어요 ☁️')).catch(()=>toast('저장 실패')); }
+
+/* ===================================================================
+   7. 선생님
+   =================================================================== */
+async function teacherLoad(){ const pin=document.getElementById('pin').value; if(!hasGAS){toast('미리보기에서는 쓸 수 없어요');return;} toast('불러오는 중…');
+  const d=await srv('teacherOverview',pin); if(!d.ok){toast('PIN이 달라요');return;}
+  const a=document.getElementById('sheetLink'); a.href=d.sheetUrl; a.style.display='inline-flex';
+  const tbl=(title,h,rows)=>`<div class="card"><h3>${title} <span class="tag">${rows.length}건</span></h3><div class="tbox"><table class="t"><thead><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${rows.slice().reverse().map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></div>`;
+  const groups=[...new Set(d.visits.map(r=>r[1]))].sort();
+  document.getElementById('teacherBox').innerHTML = `<div class="card mint"><h3>👀 한눈에</h3><div class="row">${groups.map(g=>`<span class="chip">${g}모둠 · 토의 ${d.discussion.filter(r=>String(r[1])===String(g)).length} · 설계 ${d.design.filter(r=>String(r[1])===String(g)).length} · AI ${d.chat.filter(r=>String(r[1])===String(g)).length} · 일지 ${d.journal.filter(r=>String(r[1])===String(g)).length}</span>`).join('')||'<span class="hint">아직 접속한 모둠이 없어요</span>'}</div></div>`
+   + tbl('🏫 교실 설계',['시각','모둠','차시','반·번호','설치항목','콩','처음','결과','줄임','목표','이유'],d.design) + tbl('💬 토의 기록',['시각','모둠','차시','반·번호','종류','내용','근거','👍'],d.discussion)
+   + tbl('🧪 미니 실험',['시각','모둠','차시','조건','1','2','3','평균','감소'],d.measure) + tbl('🤖 AI 대화 (앱 안)',['시각','모둠','차시','카드','역할','내용'],d.chat)
+   + tbl('📒 탐구 일지 (성찰저널)',['시각','모둠','반·번호','항목','탐구질문','새로 알게 된 것','의심·확인','그 순간','어려웠던 점','점수','마음','다음에'],d.journal)
+   + tbl('🙋 학생별 AI 질문',['시각','모둠','반·번호','차시','카드','질문','AI 답'],d.qa||[]) + tbl('💡 AI로 알게 된 것',['시각','모둠','반·번호','차시','카드','알게 된 것','관련 질문'],d.learned||[])
+   + chatLogView(d.chatlog) + tbl('🏆 발표 카드',['시각','모둠','길','결과','이유','AI지적','다만'],d.result);
+}
+function chatLogView(rows){
+  if(!rows||!rows.length) return `<div class="card"><h3>📝 AI 대화 기록 (붙여넣기) <span class="tag">0건</span></h3><div class="hint">학생이 탐구 일지에서 대화를 제출하면 여기에 나와요.</div></div>`;
+  return `<div class="card"><h3>📝 AI 대화 기록 (붙여넣기) <span class="tag">${rows.length}건</span></h3><div style="display:grid;gap:10px;max-height:520px;overflow:auto">`+rows.slice().reverse().map(r=>{
+    const msgs=String(r[7]||'').split('\n').reduce((a,l)=>{ const m=l.match(/^(나|AI):\s?(.*)$/); if(m) a.push({role:m[1]==='AI'?'ai':'me',text:m[2]}); else if(a.length) a[a.length-1].text+='\n'+l; return a; },[]);
+    return `<details class="note" style="background:#fff"><summary style="cursor:pointer;font-weight:700">${esc(r[1])}모둠 · ${esc(r[2])} · ${esc(r[3])}차시 · ${esc(r[4])}개 발화 ${r[5]==='확인 필요'?'<span class="tag" style="background:#FFECEA">개인정보 확인</span>':''} <span class="hint">${esc(r[0])}</span></summary>
+      ${r[6]?`<div class="hint" style="margin:6px 0">덧붙임: ${esc(r[6])}</div>`:''}
+      <div class="chat" style="height:auto;max-height:300px;margin-top:6px">${msgs.map(m=>`<div class="msg ${m.role==='ai'?'ai':'me'}"><span class="r">${m.role==='ai'?'🤖 AI':'🙋 학생'}</span>${esc(m.text)}</div>`).join('')}</div></details>`; }).join('')+`</div></div>`;
+}
+
+
+/* ===================================================================
+   초기화
+   =================================================================== */
+function renderAll(){ applyMode(); renderHome(); renderData(); renderTalk(); renderMini(); renderRoom(); renderChat(); renderJournal(); }
+document.getElementById('logoMascot').innerHTML=(window.ART&&ART.m_wave)?mascotImg('wave',44):mascotSVG(46);
+if(!(window.ART&&ART.key)) document.getElementById('heroMascot').innerHTML=mascotSVG(120,'#FFDD6B','#C3B8FF');
+const PAGE_MASCOT={mini:'noisy',talk:'think',room:'cheer',ai:'think',present:'cheer'};
+(function decorate(){ const A=window.ART||{};
+  const hb=document.getElementById('heroBg'); if(hb){ hb.style.backgroundImage=A.key?`url(${A.key})`:'radial-gradient(800px 400px at 70% 40%, rgba(255,154,92,.35), transparent 60%), radial-gradient(600px 400px at 20% 80%, rgba(127,209,255,.25), transparent 60%), linear-gradient(135deg,#1b1f55,#0b1026)'; }
+  Object.entries(PAGE_MASCOT).forEach(([p,pose])=>{ const sec=document.getElementById('page-'+p); const c=sec&&sec.querySelector('.card'); if(c&&A['m_'+pose]&&!c.querySelector('.page-mascot')){ c.classList.add('headline'); c.insertAdjacentHTML('beforeend',`<img class="page-mascot" src="${A['m_'+pose]}" alt="">`); } });
+  const nm=document.getElementById('navMascot'); if(nm&&A.m_cheer) nm.src=A.m_cheer;
+})();
+function heroStart(){ if(S.group&&S.nick){ go(S.lesson==='1'?'data':(S.lesson==='2'?'talk':(S.lesson==='3'?'room':'present'))); return; } const c=document.getElementById('loginCard'); if(c){ c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.remove('flash'); void c.offsetWidth; c.classList.add('flash'); } }
+document.getElementById('cls').addEventListener('change',e=>{S.cls=e.target.value;save();});
+document.getElementById('num').addEventListener('input',e=>{S.num=e.target.value;save();});
+(function init(){ const last=localStorage.getItem('sorikong2_last'); if(last){ S.group=last; load(last); } renderAll(); go('home');
+  setAIChip(false); srv('getConfig').then(c=>{ hasKey=!!c.hasKey; NOAI=[]; applyMode(); setAIChip(hasKey); if(!hasKey){ const ch=document.getElementById('chipAI'); ch.textContent='🤖 AI 키 확인 필요'; } }).catch(()=>{}); renderLearnedCount(); })();
+window.addEventListener('beforeunload',()=>{ if(S.group) localStorage.setItem('sorikong2_last',S.group); save(); });
+setInterval(()=>{ if(S.group) localStorage.setItem('sorikong2_last',S.group); },3000);
+</script>
+</body>
+</html>
