@@ -385,7 +385,7 @@ window.ART=(function(){ const b='assets/'; const o={key:b+'keyart.webp',room:b+'
     <span class="chip lav" id="chipLesson">📘 차시</span>
     <span class="chip butter click" onclick="go('room')"><span class="beans">🫘 <b id="beanCount">20</b></span>&nbsp;소리콩</span>
     <span class="chip sky" id="chipAI">🤖 AI 준비 중…</span>
-    <button class="chip click" onclick="go('teacher')">👩‍🏫 선생님</button>
+    <button class="chip click" id="teacherChip" style="display:none" onclick="go('teacher')">👩‍🏫 선생님</button>
   </div>
 </header>
 
@@ -1469,6 +1469,13 @@ const PAGE_MASCOT={mini:'noisy',talk:'think',room:'cheer',ai:'think',present:'ch
 function heroStart(){ if(S.group&&S.nick){ go(S.lesson==='1'?'data':(S.lesson==='2'?'talk':(S.lesson==='3'?'room':'present'))); return; } const c=document.getElementById('loginCard'); if(c){ c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.remove('flash'); void c.offsetWidth; c.classList.add('flash'); } }
 document.getElementById('cls').addEventListener('change',e=>{S.cls=e.target.value;save();});
 document.getElementById('num').addEventListener('input',e=>{S.num=e.target.value;save();});
+/* 선생님 버튼: 지금은 임시로 숨겨 둠.
+   - 다시 보이게 하려면 아래 SHOW_TEACHER 를 true 로 바꾸면 됨.
+   - 숨겨 둔 동안에도 주소 끝에 ?teacher 를 붙여 열면 선생님 버튼이 보임.
+     예) https://hongdonedu.github.io/sorikong/?teacher */
+const SHOW_TEACHER = false;
+(function(){ const on = SHOW_TEACHER || new URLSearchParams(location.search).has('teacher');
+  const b = document.getElementById('teacherChip'); if(b) b.style.display = on ? '' : 'none'; })();
 (function init(){ const last=localStorage.getItem('sorikong2_last'); if(last){ S.group=last; load(last); } renderAll(); go('home');
   setAIChip(false); srv('getConfig').then(c=>{ hasKey=!!c.hasKey; NOAI=[]; applyMode(); setAIChip(hasKey); if(!hasKey){ const ch=document.getElementById('chipAI'); ch.textContent='🤖 AI 키 확인 필요'; } }).catch(()=>{}); renderLearnedCount(); })();
 window.addEventListener('beforeunload',()=>{ if(S.group) localStorage.setItem('sorikong2_last',S.group); save(); });
